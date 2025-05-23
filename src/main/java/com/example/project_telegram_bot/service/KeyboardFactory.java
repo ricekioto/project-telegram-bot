@@ -7,6 +7,12 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.List;
 
 public class KeyboardFactory {
+    public static ReplyKeyboard toStart() {
+        KeyboardRow row = new KeyboardRow();
+        row.add("Начать");
+        return new ReplyKeyboardMarkup(List.of());
+    }
+
     public static ReplyKeyboard getPizzaToppingsKeyboard() {
         KeyboardRow row = new KeyboardRow();
         row.add("так");
