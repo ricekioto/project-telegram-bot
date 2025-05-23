@@ -3,8 +3,10 @@ package com.example.project_telegram_bot.bot;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.service.ResponseHandler;
 import lombok.Getter;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -22,7 +24,7 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Getter
 @Component
-public class Bot extends AbilityBot {
+public class Bot extends AbilityBot implements BeanPostProcessor {
     private final ResponseHandler responseHandler;
 
     @Autowired
@@ -40,6 +42,12 @@ public class Bot extends AbilityBot {
                 .action(ctx -> responseHandler.replyToStart(ctx.chatId()))
                 .build();
     }
+
+//    @Override
+//    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+//        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
+//        responseHandler.replyToStart();
+//    }
 
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandler.replyToButtons(getChatId(upd), upd.getMessage());

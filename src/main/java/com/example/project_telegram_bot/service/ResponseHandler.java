@@ -28,6 +28,8 @@ public class ResponseHandler {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(START_TEXT);
+        promptWithKeyboardForState(chatId, "нажми начать, чтобы запустить бота",
+                KeyboardFactory.toStart(), AWAITING_NAME);
         sender.execute(message);
         chatStates.put(chatId, AWAITING_NAME);
     }
@@ -60,6 +62,7 @@ public class ResponseHandler {
         chatStates.remove(chatId);
         sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         sender.execute(sendMessage);
+        replyToStart(chatId);
     }
 
     private void replyToOrder(long chatId, Message message) {
