@@ -5,5 +5,5 @@ public class Constants {
 
     public static final String CHAT_STATES = "chatStates";
 
-    public static final String START_TEXT = "Привет, бро, напиши имя";
+    public static final String START_TEXT = "Привет, бро";
 }
