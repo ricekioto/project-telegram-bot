@@ -51,7 +51,6 @@ public class ResponseHandler {
         sendMessage.setChatId(chatId);
         sendMessage.setText("У меня нет ответа на этот случай. Давай повторим снова.");
         sender.execute(sendMessage);
-        replyToButtons(chatId, );
     }
 
     private void stopChat(long chatId) {

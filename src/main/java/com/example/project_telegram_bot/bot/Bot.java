@@ -24,7 +24,7 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Getter
 @Component
-public class Bot extends AbilityBot implements BeanPostProcessor {
+public class Bot extends AbilityBot {
     private final ResponseHandler responseHandler;
 
     @Autowired
