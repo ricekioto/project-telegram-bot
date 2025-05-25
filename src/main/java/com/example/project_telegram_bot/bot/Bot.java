@@ -43,12 +43,6 @@ public class Bot extends AbilityBot {
                 .build();
     }
 
-//    @Override
-//    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-//        return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
-//        responseHandler.replyToStart();
-//    }
-
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandler.replyToButtons(getChatId(upd), upd.getMessage());
         return Reply.of(action, Flag.TEXT, upd -> responseHandler.userIsActive(getChatId(upd)));

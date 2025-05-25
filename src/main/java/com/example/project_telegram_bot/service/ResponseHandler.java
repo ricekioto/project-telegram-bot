@@ -125,7 +125,9 @@ public class ResponseHandler {
     }
 
     private void replyToName(long chatId, Message message) {
-//        sender.
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.set
     }
 
     public boolean userIsActive(Long chatId) {
