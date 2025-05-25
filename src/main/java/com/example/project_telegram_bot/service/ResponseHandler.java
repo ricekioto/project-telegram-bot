@@ -37,6 +37,7 @@ public class ResponseHandler {
             stopChat(chatId);
         }
 
+
         switch (chatStates.get(chatId)) {
             case AWAITING_NAME -> replyToName(chatId, message);
 //            case FOOD_DRINK_SELECTION -> replyToFoodDrinkSelection(chatId, message);
