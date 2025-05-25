@@ -40,9 +40,6 @@ public class ResponseHandler {
 
         switch (chatStates.get(chatId)) {
             case AWAITING_NAME -> replyToName(chatId, message);
-//            case FOOD_DRINK_SELECTION -> replyToFoodDrinkSelection(chatId, message);
-//            case PIZZA_TOPPINGS -> replyToPizzaToppings(chatId, message);
-//            case AWAITING_CONFIRMATION -> replyToOrder(chatId, message);
             default -> unexpectedMessage(chatId);
         }
     }
@@ -126,8 +123,6 @@ public class ResponseHandler {
 
     private void replyToName(long chatId, Message message) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(chatId);
-        sendMessage.set
     }
 
     public boolean userIsActive(Long chatId) {
