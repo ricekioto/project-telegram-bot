@@ -1,13 +1,13 @@
 package com.example.project_telegram_bot.reposiroty;
 
-import com.example.project_telegram_bot.entity.User;
+import com.example.project_telegram_bot.entity.UserTg;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    User findUserByName(String username);
+public interface UserRepository extends JpaRepository<UserTg, Long> {
+    UserTg findUserByName(String username);
 
-    User findUserById(Long id);
+    UserTg findUserById(Long id);
 
 }

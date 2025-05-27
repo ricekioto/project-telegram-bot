@@ -3,7 +3,7 @@ package com.example.project_telegram_bot.entity;
 import jakarta.persistence.*;
 
 @Entity
-public class User {
+public class UserTg {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
