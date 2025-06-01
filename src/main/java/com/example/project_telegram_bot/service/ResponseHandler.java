@@ -37,11 +37,9 @@ public class ResponseHandler {
             stopChat(chatId);
         }
 
+
         switch (chatStates.get(chatId)) {
             case AWAITING_NAME -> replyToName(chatId, message);
-            case FOOD_DRINK_SELECTION -> replyToFoodDrinkSelection(chatId, message);
-            case PIZZA_TOPPINGS -> replyToPizzaToppings(chatId, message);
-            case AWAITING_CONFIRMATION -> replyToOrder(chatId, message);
             default -> unexpectedMessage(chatId);
         }
     }
@@ -49,14 +47,14 @@ public class ResponseHandler {
     private void unexpectedMessage(long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText("I did not expect that.");
+        sendMessage.setText("У меня нет ответа на этот случай. Давай повторим снова.");
         sender.execute(sendMessage);
     }
 
     private void stopChat(long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText("снова или че");
+        sendMessage.setText("чат закрыт");
         chatStates.remove(chatId);
         sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
         sender.execute(sendMessage);
@@ -124,9 +122,7 @@ public class ResponseHandler {
     }
 
     private void replyToName(long chatId, Message message) {
-        promptWithKeyboardForState(chatId, "Привет бро по имени " + message.getText() + " меня зовут Атай. хочешь дальше?",
-                KeyboardFactory.getPizzaOrDrinkKeyboard(),
-                FOOD_DRINK_SELECTION);
+        SendMessage sendMessage = new SendMessage();
     }
 
     public boolean userIsActive(Long chatId) {
