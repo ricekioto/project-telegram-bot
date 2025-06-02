@@ -3,21 +3,17 @@ package com.example.project_telegram_bot.service;
 import com.example.project_telegram_bot.bot.Bot;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
-import org.checkerframework.checker.units.qual.A;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 import java.util.Map;
 
 import static com.example.project_telegram_bot.entity.Constants.START_TEXT;
-import static com.example.project_telegram_bot.entity.UserState.*;
+import static com.example.project_telegram_bot.entity.UserState.AWAITING_NAME;
 
 
 public class ResponseHandler {
@@ -33,6 +29,8 @@ public class ResponseHandler {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setReplyMarkup(KeyboardFactory.toStart());
+        message.setText("ну погнали");
+        sender.execute(message);
         replyToStart(chatId);
     }
 
@@ -41,6 +39,7 @@ public class ResponseHandler {
         message.setChatId(chatId);
         if (message.getText().equalsIgnoreCase(START_TEXT)) {
             message.setText("тогда начинаем");
+            sender.execute(message);
         }
         message.setReplyMarkup(KeyboardFactory.closeKeyboard());
     }

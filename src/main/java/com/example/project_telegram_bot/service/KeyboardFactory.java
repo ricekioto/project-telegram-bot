@@ -11,7 +11,7 @@ public class KeyboardFactory {
     public static ReplyKeyboard toStart() {
         KeyboardRow row = new KeyboardRow();
         row.add("Начать");
-        return new ReplyKeyboardMarkup(List.of());
+        return new ReplyKeyboardMarkup(List.of(row));
     }
 
     public static ReplyKeyboard getPizzaToppingsKeyboard() {
