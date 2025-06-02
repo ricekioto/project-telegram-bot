@@ -31,7 +31,7 @@ public class ResponseHandler {
         message.setReplyMarkup(KeyboardFactory.toStart());
         message.setText("ну погнали");
         sender.execute(message);
-        replyToStart(chatId);
+        chatStates.put(chatId, AWAITING_NAME);
     }
 
     public void replyToStart(long chatId) {

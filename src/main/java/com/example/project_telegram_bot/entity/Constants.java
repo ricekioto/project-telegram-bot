@@ -6,5 +6,5 @@ public class Constants {
 
     public static final String CHAT_STATES = "";
 
-    public static final String START_TEXT = "Меню:";
+    public static final String START_TEXT = "Начать";
 }
