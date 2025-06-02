@@ -1,18 +1,24 @@
 package com.example.project_telegram_bot.service;
 
+import com.example.project_telegram_bot.bot.Bot;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 import java.util.Map;
 
 import static com.example.project_telegram_bot.entity.Constants.START_TEXT;
 import static com.example.project_telegram_bot.entity.UserState.*;
+
 
 public class ResponseHandler {
     private SilentSender sender;
@@ -23,31 +29,41 @@ public class ResponseHandler {
         chatStates = db.getMap(Constants.CHAT_STATES);
     }
 
+    public void toStart(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setReplyMarkup(KeyboardFactory.toStart());
+        replyToStart(chatId);
+    }
 
     public void replyToStart(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
-        message.setText(START_TEXT);
-        sender.execute(message);
-        chatStates.put(chatId, AWAITING_NAME);
+        if (message.getText().equalsIgnoreCase(START_TEXT)) {
+            message.setText("тогда начинаем");
+        }
+        message.setReplyMarkup(KeyboardFactory.closeKeyboard());
     }
 
     public void replyToButtons(long chatId, Message message) {
         if (message.getText().equalsIgnoreCase("/stop")) {
             stopChat(chatId);
         }
-
-
         switch (chatStates.get(chatId)) {
+            case START -> toStart(chatId);
             case AWAITING_NAME -> replyToName(chatId, message);
             default -> unexpectedMessage(chatId);
         }
     }
 
+    public void menu(long chatId) {
+
+    }
+
     private void unexpectedMessage(long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText("У меня нет ответа на этот случай. Давай повторим снова.");
+        sendMessage.setText("У меня нет ответа на этот случай.");
         sender.execute(sendMessage);
     }
 
@@ -56,8 +72,9 @@ public class ResponseHandler {
         sendMessage.setChatId(chatId);
         sendMessage.setText("чат закрыт");
         chatStates.remove(chatId);
-        sendMessage.setReplyMarkup(new ReplyKeyboardRemove(true));
+        sendMessage.setReplyMarkup(KeyboardFactory.toStart());
         sender.execute(sendMessage);
+
     }
 
     private void replyToOrder(long chatId, Message message) {
@@ -67,7 +84,7 @@ public class ResponseHandler {
             sendMessage.setText("спс");
             sendMessage.setReplyMarkup(KeyboardFactory.getPizzaOrDrinkKeyboard());
             sender.execute(sendMessage);
-            chatStates.put(chatId, FOOD_DRINK_SELECTION);
+            chatStates.put(chatId, AWAITING_NAME);
         } else if ("no".equalsIgnoreCase(message.getText())) {
             stopChat(chatId);
         } else {
@@ -80,10 +97,10 @@ public class ResponseHandler {
     private void replyToPizzaToppings(long chatId, Message message) {
         if ("margherita".equalsIgnoreCase(message.getText())) {
             promptWithKeyboardForState(chatId, "выбери что-то снова",
-                    KeyboardFactory.getYesOrNo(), AWAITING_CONFIRMATION);
+                    KeyboardFactory.getYesOrNo(), AWAITING_NAME);
         } else if ("pepperoni".equalsIgnoreCase(message.getText())) {
             promptWithKeyboardForState(chatId, "тут короч тож",
-                    KeyboardFactory.getPizzaToppingsKeyboard(), PIZZA_TOPPINGS);
+                    KeyboardFactory.getPizzaToppingsKeyboard(), AWAITING_NAME);
         } else {
             SendMessage sendMessage = new SendMessage();
             sendMessage.setChatId(chatId);
@@ -113,7 +130,7 @@ public class ResponseHandler {
             sendMessage.setText("и тут тоже");
             sendMessage.setReplyMarkup(KeyboardFactory.getPizzaToppingsKeyboard());
             sender.execute(sendMessage);
-            chatStates.put(chatId, UserState.PIZZA_TOPPINGS);
+            chatStates.put(chatId, AWAITING_NAME);
         } else {
             sendMessage.setText("ага " + message.getText() + ". выбери еще что-то");
             sendMessage.setReplyMarkup(KeyboardFactory.getPizzaOrDrinkKeyboard());
