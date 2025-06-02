@@ -2,6 +2,7 @@ package com.example.project_telegram_bot.service;
 
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.List;
@@ -33,4 +34,9 @@ public class KeyboardFactory {
         row.add("снова");
         return new ReplyKeyboardMarkup(List.of(row));
     }
+
+    public static ReplyKeyboard closeKeyboard() {
+        return new ReplyKeyboardRemove(true);
+    }
+
 }
