@@ -32,6 +32,7 @@ public class Bot extends AbilityBot {
         super(env.getProperty("bot.token"), "bot.name");
         responseHandler = new ResponseHandler(silent, db);
     }
+
     public Ability startBot() {
         return Ability
                 .builder()
@@ -39,7 +40,7 @@ public class Bot extends AbilityBot {
                 .info(Constants.START_DESCRIPTION)
                 .locality(USER)
                 .privacy(PUBLIC)
-                .action(ctx -> responseHandler.replyToStart(ctx.chatId()))
+                .action(ctx -> responseHandler.toStart(ctx.chatId()))
                 .build();
     }
 
