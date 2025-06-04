@@ -1,9 +1,7 @@
 package com.example.project_telegram_bot.service;
 
-import com.example.project_telegram_bot.bot.Bot;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
-import org.springframework.stereotype.Service;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
