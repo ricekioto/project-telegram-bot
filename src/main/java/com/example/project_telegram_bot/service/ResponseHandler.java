@@ -48,12 +48,12 @@ public class ResponseHandler {
         }
         switch (chatStates.get(chatId)) {
             case START -> toStart(chatId);
-            case AWAITING_NAME -> replyToName(chatId, message);
+            case MENU -> menu(chatId, message);
             default -> unexpectedMessage(chatId);
         }
     }
 
-    public void menu(long chatId) {
+    public void menu(long chatId, Message message) {
 
     }
 
