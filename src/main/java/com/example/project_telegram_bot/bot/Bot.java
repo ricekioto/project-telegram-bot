@@ -1,12 +1,9 @@
 package com.example.project_telegram_bot.bot;
 
 import com.example.project_telegram_bot.entity.Constants;
+import com.example.project_telegram_bot.reposiroty.UserRepository;
 import com.example.project_telegram_bot.service.ResponseHandler;
 import lombok.Getter;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -26,11 +23,12 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 @Component
 public class Bot extends AbilityBot {
     private final ResponseHandler responseHandler;
+    private final UserRepository userRepository;
 
-    @Autowired
-    public Bot(Environment env) {
+    public Bot(Environment env, UserRepository userRepository) {
         super(env.getProperty("bot.token"), "bot.name");
-        responseHandler = new ResponseHandler(silent, db);
+        this.responseHandler = new ResponseHandler(silent, db);
+        this.userRepository = userRepository;
     }
 
     public Ability startBot() {
