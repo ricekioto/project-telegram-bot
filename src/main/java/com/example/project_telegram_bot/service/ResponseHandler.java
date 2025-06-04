@@ -17,7 +17,7 @@ import static com.example.project_telegram_bot.entity.UserState.AWAITING_NAME;
 
 
 public class ResponseHandler {
-    private SilentSender sender;
+    private final SilentSender sender;
     private Map<Long, UserState> chatStates;
 
     public ResponseHandler(SilentSender silentSender, DBContext db) {
