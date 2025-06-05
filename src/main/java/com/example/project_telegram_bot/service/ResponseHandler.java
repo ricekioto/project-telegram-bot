@@ -1,17 +1,14 @@
 package com.example.project_telegram_bot.service;
 
-import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.Map;
 
 import static com.example.project_telegram_bot.entity.Constants.START_TEXT;
-import static com.example.project_telegram_bot.entity.UserState.AWAITING_NAME;
 
 
 public class ResponseHandler {
@@ -20,7 +17,7 @@ public class ResponseHandler {
 
     public ResponseHandler(SilentSender silentSender, DBContext db) {
         this.sender = silentSender;
-        chatStates = db.getMap(Constants.CHAT_STATES);
+        chatStates = db.getMap();
     }
 
     public void toStart(long chatId) {
@@ -29,7 +26,7 @@ public class ResponseHandler {
         message.setReplyMarkup(KeyboardFactory.toStart());
         message.setText("ну погнали");
         sender.execute(message);
-        chatStates.put(chatId, AWAITING_NAME);
+        chatStates.put(chatId, );
     }
 
     public void replyToStart(long chatId) {
