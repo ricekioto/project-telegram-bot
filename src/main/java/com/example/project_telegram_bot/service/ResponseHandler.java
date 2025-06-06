@@ -2,6 +2,8 @@ package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,13 +16,14 @@ import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 
 public class ResponseHandler {
-    private final SilentSender sender;
+    private KeyboardFactory keyboardFactory;
+    private SilentSender sender;
     private Map<Long, UserState> chatStates;
     private SendMessage sendMessage;
 
 
-    public ResponseHandler(SilentSender silentSender, DBContext db) {
-        this.sender = silentSender;
+    public ResponseHandler(SilentSender silentSender, DBContext db, @Autowired KeyboardFactory keyboardFactory) {
+        sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         sendMessage = new SendMessage();
     }
@@ -38,13 +41,32 @@ public class ResponseHandler {
         switch (chatStates.get(chatId)) {
             case START -> toStart(chatId);
             case MENU -> menu(chatId, message);
+            case INTERVAL30 -> interlvalTime30(chatId, message);
+            case INTERVAL60 -> interlvalTime60(chatId, message);
             default -> unexpectedMessage(chatId);
         }
     }
 
     public void menu(long chatId, Message message) {
         sendMessage.setChatId(chatId);
-        sendMessage.setText("Выбери интервал времени, с которым будет отправляться сообщение");
+        sendMessage.setText("Выбери интервал времени с которым будет отправляться сообщение");
+        sendMessage.setReplyMarkup(keyboardFactory.interlvalTime());
+        chatStates.put(chatId, MENU);
+        sender.execute(sendMessage);
+    }
+
+    @Scheduled(cron = "0 */30 * * * *")
+    public void interlvalTime30(long chatId, Message message) {
+        sendMessage.setChatId(chatId);
+
+
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void interlvalTime60(long chatId, Message message) {
+        sendMessage.setChatId(chatId);
+
+
     }
 
     private void unexpectedMessage(long chatId) {
@@ -58,12 +80,11 @@ public class ResponseHandler {
         sendMessage.setChatId(chatId);
         sendMessage.setText(CHAT_CLOSE);
         chatStates.remove(chatId);
-        sendMessage.setReplyMarkup(KeyboardFactory.toStart());
+        sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
         sender.execute(sendMessage);
-
     }
 
-//    private void replyToOrder(long chatId, Message message) {
+    //    private void replyToOrder(long chatId, Message message) {
 //        sendMessage.setChatId(chatId);
 //        if ("yes".equalsIgnoreCase(message.getText())) {
 //            sendMessage.setText("спс");
