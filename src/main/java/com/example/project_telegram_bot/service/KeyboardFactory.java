@@ -14,24 +14,10 @@ public class KeyboardFactory {
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
-    public static ReplyKeyboard getPizzaToppingsKeyboard() {
+    public static ReplyKeyboard interlvalTime() {
         KeyboardRow row = new KeyboardRow();
-        row.add("так");
-        row.add("или вот так");
-        return new ReplyKeyboardMarkup(List.of(row));
-    }
-
-    public static ReplyKeyboard getPizzaOrDrinkKeyboard() {
-        KeyboardRow row = new KeyboardRow();
-        row.add("окака");
-        row.add("зачем");
-        return new ReplyKeyboardMarkup(List.of(row));
-    }
-
-    public static ReplyKeyboard getYesOrNo() {
-        KeyboardRow row = new KeyboardRow();
-        row.add("конец");
-        row.add("снова");
+        row.add("30");
+        row.add("60");
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
