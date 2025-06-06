@@ -2,6 +2,7 @@ package com.example.project_telegram_bot.bot;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserRepository;
+import com.example.project_telegram_bot.service.KeyboardFactory;
 import com.example.project_telegram_bot.service.ResponseHandler;
 import lombok.Getter;
 import org.springframework.core.env.Environment;
@@ -25,9 +26,9 @@ public class Bot extends AbilityBot {
     private final ResponseHandler responseHandler;
     private final UserRepository userRepository;
 
-    public Bot(Environment env, UserRepository userRepository) {
+    public Bot(Environment env, UserRepository userRepository, KeyboardFactory keyboardFactory) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandler = new ResponseHandler(silent, db);
+        this.responseHandler = new ResponseHandler(silent, db, keyboardFactory);
         this.userRepository = userRepository;
     }
 
