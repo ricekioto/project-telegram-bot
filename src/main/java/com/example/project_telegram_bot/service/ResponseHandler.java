@@ -1,5 +1,6 @@
 package com.example.project_telegram_bot.service;
 
+import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserState;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
@@ -8,35 +9,27 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.Map;
 
+import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
 import static com.example.project_telegram_bot.entity.Constants.START_TEXT;
+import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 
 public class ResponseHandler {
     private final SilentSender sender;
     private Map<Long, UserState> chatStates;
+    private SendMessage sendMessage;
+
 
     public ResponseHandler(SilentSender silentSender, DBContext db) {
         this.sender = silentSender;
-        chatStates = db.getMap();
+        chatStates = db.getMap(Constants.CHAT_STATES);
+        sendMessage = new SendMessage();
     }
 
     public void toStart(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        message.setReplyMarkup(KeyboardFactory.toStart());
-        message.setText("ну погнали");
-        sender.execute(message);
-        chatStates.put(chatId, );
-    }
-
-    public void replyToStart(long chatId) {
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId);
-        if (message.getText().equalsIgnoreCase(START_TEXT)) {
-            message.setText("тогда начинаем");
-            sender.execute(message);
-        }
-        message.setReplyMarkup(KeyboardFactory.closeKeyboard());
+        sendMessage.setChatId(chatId);
+        sender.execute(sendMessage);
+        chatStates.put(chatId, MENU);
     }
 
     public void replyToButtons(long chatId, Message message) {
@@ -51,20 +44,20 @@ public class ResponseHandler {
     }
 
     public void menu(long chatId, Message message) {
-
+        sendMessage.setChatId(chatId);
+        sendMessage.setText("Выбери интервал времени, с которым будет отправляться сообщение");
     }
 
     private void unexpectedMessage(long chatId) {
-        SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText("У меня нет ответа на этот случай.");
+        chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
     }
 
     private void stopChat(long chatId) {
-        SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText("чат закрыт");
+        sendMessage.setText(CHAT_CLOSE);
         chatStates.remove(chatId);
         sendMessage.setReplyMarkup(KeyboardFactory.toStart());
         sender.execute(sendMessage);
@@ -72,7 +65,6 @@ public class ResponseHandler {
     }
 
 //    private void replyToOrder(long chatId, Message message) {
-//        SendMessage sendMessage = new SendMessage();
 //        sendMessage.setChatId(chatId);
 //        if ("yes".equalsIgnoreCase(message.getText())) {
 //            sendMessage.setText("спс");
@@ -136,7 +128,7 @@ public class ResponseHandler {
 //        SendMessage sendMessage = new SendMessage();
 //    }
 //
-//    public boolean userIsActive(Long chatId) {
-//        return chatStates.containsKey(chatId);
-//    }
+    public boolean userIsActive(Long chatId) {
+        return chatStates.containsKey(chatId);
+    }
 }
