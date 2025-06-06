@@ -2,7 +2,6 @@ package com.example.project_telegram_bot.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,8 @@ public class ParsingService {
         String html = Files.readString(pathFileHtml);
         Document doc = Jsoup.parse(html);
         Elements elements = doc.select(cssSelector);
-        return elements.toString();
+
+        return elements.get(0).text();
+
     }
 }
