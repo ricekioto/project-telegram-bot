@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.Map;
 
 import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
-import static com.example.project_telegram_bot.entity.Constants.START_TEXT;
 import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 
