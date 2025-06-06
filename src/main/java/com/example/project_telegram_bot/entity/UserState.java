@@ -4,4 +4,6 @@ public enum UserState {
     START,
     MENU,
     CLOSE,
+    INTERVAL30,
+    INTERVAL60
 }
