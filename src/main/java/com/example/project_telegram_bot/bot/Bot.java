@@ -11,12 +11,12 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.bot.BaseAbilityBot;
-import org.telegram.abilitybots.api.objects.Ability;
-import org.telegram.abilitybots.api.objects.Flag;
-import org.telegram.abilitybots.api.objects.Locality;
-import org.telegram.abilitybots.api.objects.Reply;
+import org.telegram.abilitybots.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static org.telegram.abilitybots.api.objects.Locality.USER;
@@ -29,6 +29,7 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 public class Bot extends AbilityBot {
     private final ResponseHandler responseHandler;
     private final UserRepository userRepository;
+    private static final String USER_CONTEXT = "userContext";
 
     public Bot(Environment env, UserRepository userRepository,
                KeyboardFactory keyboardFactory, EnglishService englishService) {
@@ -46,12 +47,12 @@ public class Bot extends AbilityBot {
                 .privacy(Privacy.ADMIN) // Только для администраторов
                 .action(ctx -> {
                     long chatId = ctx.chatId();
-                    if (!isUserAdmin(chatId)) { // Проверяем, что пользователь - администратор
+                    if (!isAdmin(chatId)) { // Проверяем, что пользователь - администратор
                         silent.send("У вас нет прав для выполнения этой команды!", chatId);
                         return;
                     }
 
-                    Map<Long, Object> userContextMap = dbContext.getMap(USER_CONTEXT, Long.class, Object.class);
+                    Map<Long, Object> userContextMap = db.getMap(USER_CONTEXT);
                     // Получаем копию ключей, чтобы избежать ConcurrentModificationException
                     Set<Long> chatIds = new HashSet<>(userContextMap.keySet());
 
