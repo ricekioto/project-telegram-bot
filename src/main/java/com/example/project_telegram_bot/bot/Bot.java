@@ -13,6 +13,7 @@ import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.bot.BaseAbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Flag;
+import org.telegram.abilitybots.api.objects.Locality;
 import org.telegram.abilitybots.api.objects.Reply;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -34,6 +35,34 @@ public class Bot extends AbilityBot {
         super(env.getProperty("bot.token"), "bot.name");
         this.responseHandler = new ResponseHandler(silent, db, keyboardFactory, userRepository, englishService);
         this.userRepository = userRepository;
+    }
+
+    public Ability resetAllCommand() {
+        return Ability
+                .builder()
+                .name("resetall")
+                .info("Resets the bot state for ALL users. Only for admins! USE WITH EXTREME CAUTION! THIS WILL ERASE ALL USER DATA!")
+                .locality(Locality.ALL)
+                .privacy(Privacy.ADMIN) // Только для администраторов
+                .action(ctx -> {
+                    long chatId = ctx.chatId();
+                    if (!isUserAdmin(chatId)) { // Проверяем, что пользователь - администратор
+                        silent.send("У вас нет прав для выполнения этой команды!", chatId);
+                        return;
+                    }
+
+                    Map<Long, Object> userContextMap = dbContext.getMap(USER_CONTEXT, Long.class, Object.class);
+                    // Получаем копию ключей, чтобы избежать ConcurrentModificationException
+                    Set<Long> chatIds = new HashSet<>(userContextMap.keySet());
+
+                    for (Long id : chatIds) {
+                        userContextMap.remove(id); // Удаляем записи по chatId
+                        // Если нужно, можно добавить логирование удаления chatId
+                    }
+
+                    silent.send("Состояние бота сброшено для ВСЕХ пользователей! Все данные пользователей удалены!", chatId);
+                })
+                .build();
     }
 
     public Ability startBot() {
