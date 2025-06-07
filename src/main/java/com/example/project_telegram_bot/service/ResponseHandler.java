@@ -47,7 +47,7 @@ public class ResponseHandler {
     }
 
     public void replyToButtons(long chatId, Message message) {
-
+        closeKeyboard(chatId);
         if (message.getText().equalsIgnoreCase("/stop")) {
             stopChat(chatId);
         }
@@ -65,7 +65,7 @@ public class ResponseHandler {
 
     public void menu(long chatId, Message message) {
         sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(keyboardFactory.interlvalTime());
+        intervalTimeKeyboard(chatId);
         chatStates.put(chatId, INTERVAL30);
         sender.execute(sendMessage);
     }
@@ -93,6 +93,18 @@ public class ResponseHandler {
         sender.execute(sendMessage);
     }
 
+    public void closeKeyboard(long chatId){
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
+        sender.execute(sendMessage);
+    }
+
+    public void intervalTimeKeyboard(long chatId) {
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(keyboardFactory.interlvalTime());
+        sender.execute(sendMessage);
+    }
+
     private void stopChat(long chatId) {
         sendMessage.setChatId(chatId);
         sendMessage.setText(CHAT_CLOSE);
@@ -101,70 +113,6 @@ public class ResponseHandler {
         sender.execute(sendMessage);
     }
 
-    //    private void replyToOrder(long chatId, Message message) {
-//        sendMessage.setChatId(chatId);
-//        if ("yes".equalsIgnoreCase(message.getText())) {
-//            sendMessage.setText("спс");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getPizzaOrDrinkKeyboard());
-//            sender.execute(sendMessage);
-//            chatStates.put(chatId, AWAITING_NAME);
-//        } else if ("no".equalsIgnoreCase(message.getText())) {
-//            stopChat(chatId);
-//        } else {
-//            sendMessage.setText("Пожалуйста, выбери что-то");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getYesOrNo());
-//            sender.execute(sendMessage);
-//        }
-//    }
-//
-//    private void replyToPizzaToppings(long chatId, Message message) {
-//        if ("margherita".equalsIgnoreCase(message.getText())) {
-//            promptWithKeyboardForState(chatId, "выбери что-то снова",
-//                    KeyboardFactory.getYesOrNo(), );
-//        } else if ("pepperoni".equalsIgnoreCase(message.getText())) {
-//            promptWithKeyboardForState(chatId, "тут короч тож",
-//                    KeyboardFactory.getPizzaToppingsKeyboard(), );
-//        } else {
-//            SendMessage sendMessage = new SendMessage();
-//            sendMessage.setChatId(chatId);
-//            sendMessage.setText("ага " + message.getText() + " выбери еще");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getPizzaToppingsKeyboard());
-//            sender.execute(sendMessage);
-//        }
-//    }
-//
-//    private void promptWithKeyboardForState(long chatId, String text, ReplyKeyboard YesOrNo, UserState awaitingReorder) {
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(chatId);
-//        sendMessage.setText(text);
-//        sendMessage.setReplyMarkup(YesOrNo);
-//        sender.execute(sendMessage);
-//        chatStates.put(chatId, awaitingReorder);
-//    }
-//
-//    private void replyToFoodDrinkSelection(long chatId, Message message) {
-//        SendMessage sendMessage = new SendMessage();
-//        sendMessage.setChatId(chatId);
-//        if ("drink".equalsIgnoreCase(message.getText())) {
-//            sendMessage.setText("тут такого нет");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getPizzaOrDrinkKeyboard());
-//            sender.execute(sendMessage);
-//        } else if ("pizza".equalsIgnoreCase(message.getText())) {
-//            sendMessage.setText("и тут тоже");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getPizzaToppingsKeyboard());
-//            sender.execute(sendMessage);
-//            chatStates.put(chatId, AWAITING_NAME);
-//        } else {
-//            sendMessage.setText("ага " + message.getText() + ". выбери еще что-то");
-//            sendMessage.setReplyMarkup(KeyboardFactory.getPizzaOrDrinkKeyboard());
-//            sender.execute(sendMessage);
-//        }
-//    }
-//
-//    private void replyToName(long chatId, Message message) {
-//        SendMessage sendMessage = new SendMessage();
-//    }
-//
     public boolean userIsActive(Long chatId) {
         return chatStates.containsKey(chatId);
     }
