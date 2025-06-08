@@ -15,8 +15,4 @@ public interface UserRepository extends JpaRepository<UserTg, Long> {
     UserTg findUserById(Long id);
 
     boolean existsByChatId(Long chatId);
-
-    @Transactional
-    @Query("insert into UserTg (chatId) values (:chat_id)")
-    void save(@Param("chat_id") long chatId);
 }
