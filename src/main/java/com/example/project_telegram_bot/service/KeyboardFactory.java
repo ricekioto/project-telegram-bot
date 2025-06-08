@@ -16,9 +16,16 @@ public class KeyboardFactory {
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
-    public ReplyKeyboard interlvalTime() {
+    public ReplyKeyboard getSentence() {
         KeyboardRow row = new KeyboardRow();
         row.add("Получить сгенерирование сообщение на английском языке");
+        return new ReplyKeyboardMarkup(List.of(row));
+    }
+
+    public ReplyKeyboard interlvalTime() {
+        KeyboardRow row = new KeyboardRow();
+        row.add("30");
+        row.add("60");
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
