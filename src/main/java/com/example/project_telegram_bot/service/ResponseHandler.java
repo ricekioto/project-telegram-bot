@@ -111,7 +111,7 @@ public class ResponseHandler {
     }
 
 
-    private void stopChat(long chatId) {
+    public void stopChat(long chatId) {
         sendMessage.setChatId(chatId);
         sendMessage.setText(CHAT_CLOSE);
         chatStates.remove(chatId);
