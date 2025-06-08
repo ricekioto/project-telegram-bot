@@ -5,5 +5,6 @@ public enum UserState {
     MENU,
     CLOSE,
     INTERVAL30,
-    INTERVAL60
+    INTERVAL60,
+    SENTENCE,
 }
