@@ -1,19 +1,15 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
-import com.example.project_telegram_bot.entity.UserState;
 import com.example.project_telegram_bot.reposiroty.UserRepository;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 
 import java.util.Map;
 
-import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
-import static com.example.project_telegram_bot.entity.UserState.INTERVAL30;
-import static com.example.project_telegram_bot.entity.UserState.MENU;
+import static com.example.project_telegram_bot.entity.UserState.*;
 
 
 public class ResponseHandler {
@@ -21,7 +17,7 @@ public class ResponseHandler {
     private UserRepository userRepository;
     private EnglishService englishService;
     private SilentSender sender;
-    private Map<Long, UserState> chatStates;
+    private Map<Long, Object> chatStates;
     private SendMessage sendMessage;
 
 
@@ -43,16 +39,21 @@ public class ResponseHandler {
 //            userRepository.save(chatId);
 //        }
         sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(keyboardFactory.getSentence());
         chatStates.put(chatId, MENU);
+        sender.execute(sendMessage);
     }
 
     public void replyToButtons(long chatId, Message message) {
+
         if (message.getText().equalsIgnoreCase("/stop")) {
             stopChat(chatId);
+            sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
             return;
         }
-        if (message.getText().equalsIgnoreCase("Получить сгенерирование сообщение на английском языке")) {
+        if (message.getText().equalsIgnoreCase("Получить сгенерированное сообщение на английском языке")) {
             getSentence(chatId, message);
+            sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
             return;
         }
         switch (chatStates.get(chatId)) {
@@ -68,8 +69,8 @@ public class ResponseHandler {
 
     public void menu(long chatId, Message message) {
         sendMessage.setChatId(chatId);
-        executeKeyboard(chatId, keyboardFactory.interlvalTime());
-        chatStates.put(chatId, INTERVAL30);
+        sendMessage.setReplyMarkup(keyboardFactory.getSentence());
+        chatStates.put(chatId, SENTENCE);
         sender.execute(sendMessage);
     }
 
@@ -104,18 +105,11 @@ public class ResponseHandler {
         sender.execute(sendMessage);
     }
 
-    public void executeKeyboard(long chatId, ReplyKeyboard replyKeyboard) {
-        sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(replyKeyboard);
-        sender.execute(sendMessage);
-    }
-
 
     public void stopChat(long chatId) {
         sendMessage.setChatId(chatId);
-        sendMessage.setText(CHAT_CLOSE);
         chatStates.remove(chatId);
-        executeKeyboard(chatId, keyboardFactory.closeKeyboard());
+        sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
         sender.execute(sendMessage);
     }
 
