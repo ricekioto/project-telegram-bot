@@ -51,17 +51,16 @@ public class ResponseHandler {
         if (message.getText().equalsIgnoreCase("/stop")) {
             stopChat(chatId);
         }
-        if (message.getText().equalsIgnoreCase("Получить сгенерированное сообщение на английском языке")) {
-            interlvalTime30(chatId, message);
-        } else {
-            switch (chatStates.get(chatId)) {
-                case START -> toStart(chatId);
-                case MENU -> menu(chatId, message);
-                case INTERVAL30 -> interlvalTime30(chatId, message);
-//            case INTERVAL60 ->
-                default -> unexpectedMessage(chatId);
-            }
+
+        switch (chatStates.get(chatId)) {
+            case START -> toStart(chatId);
+            case MENU -> menu(chatId, message);
+
+//                case INTERVAL30 -> interlvalTime30(chatId, message);
+//                case INTERVAL60 ->
+            default -> unexpectedMessage(chatId);
         }
+
     }
 
     public void menu(long chatId, Message message) {
@@ -69,6 +68,10 @@ public class ResponseHandler {
         intervalTimeKeyboard(chatId);
         chatStates.put(chatId, INTERVAL30);
         sender.execute(sendMessage);
+    }
+
+    public void getSentence(long chatId, Message message) {
+        sendMessage.setChatId(chatId);
     }
 
     //    @Scheduled(cron = "0 */30 * * * *")
