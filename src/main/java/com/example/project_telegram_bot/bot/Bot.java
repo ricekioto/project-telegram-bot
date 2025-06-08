@@ -1,7 +1,6 @@
 package com.example.project_telegram_bot.bot;
 
 import com.example.project_telegram_bot.entity.Constants;
-import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.reposiroty.UserRepository;
 import com.example.project_telegram_bot.service.EnglishService;
 import com.example.project_telegram_bot.service.KeyboardFactory;
@@ -19,10 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+import static com.example.project_telegram_bot.entity.Constants.CHAT_STATES;
 import static org.telegram.abilitybots.api.objects.Locality.ALL;
-import static org.telegram.abilitybots.api.objects.Locality.USER;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
-import static org.telegram.abilitybots.api.util.AbilityUtils.fullName;
 import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Getter
@@ -89,9 +87,10 @@ public class Bot extends AbilityBot {
                     long chatId = ctx.chatId();
                     // Очищаем Context для текущего пользователя
                     db.getMap(USER_CONTEXT).remove(chatId);
+                    db.getMap(CHAT_STATES).remove(chatId);
+                    responseHandler.stopChat(chatId);
                     silent.send("Состояние бота сброшено!", chatId);
                 })
-                .action(ctx -> responseHandler.stopChat(ctx.chatId()))
                 .build();
     }
 
