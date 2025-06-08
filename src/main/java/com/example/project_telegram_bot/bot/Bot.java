@@ -40,7 +40,7 @@ public class Bot extends AbilityBot {
     public Ability resetAllCommand() {
         return Ability
                 .builder()
-                .name("resetall")
+                .name("resetAll")
                 .info("Resets the bot state for ALL users. Only for admins! USE WITH EXTREME CAUTION! THIS WILL ERASE ALL USER DATA!")
                 .locality(Locality.ALL)
                 .privacy(Privacy.ADMIN) // Только для администраторов
@@ -62,7 +62,6 @@ public class Bot extends AbilityBot {
 
                     silent.send("Состояние бота сброшено для ВСЕХ пользователей! Все данные пользователей удалены!", chatId);
                 })
-                .action(ctx -> responseHandler.stopChat(ctx.chatId()))
                 .build();
     }
 
@@ -85,10 +84,7 @@ public class Bot extends AbilityBot {
                 .privacy(PUBLIC)
                 .action(ctx -> {
                     long chatId = ctx.chatId();
-                    // Очищаем Context для текущего пользователя
-                    db.getMap(USER_CONTEXT).remove(chatId);
                     db.getMap(CHAT_STATES).remove(chatId);
-                    responseHandler.stopChat(chatId);
                     silent.send("Состояние бота сброшено!", chatId);
                 })
                 .build();

@@ -35,9 +35,6 @@ public class ResponseHandler {
     }
 
     public void toStart(long chatId) {
-//        if (!userRepository.existsByChatId(chatId)) {
-//            userRepository.save(chatId);
-//        }
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(keyboardFactory.getSentence());
         chatStates.put(chatId, MENU);
@@ -45,23 +42,18 @@ public class ResponseHandler {
     }
 
     public void replyToButtons(long chatId, Message message) {
-
-        if (message.getText().equalsIgnoreCase("/stop")) {
+        if ("/stop".equalsIgnoreCase(message.getText())) {
             stopChat(chatId);
-            sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
             return;
         }
-        if (message.getText().equalsIgnoreCase("Получить сгенерированное сообщение на английском языке")) {
+        if ("Получить сгенерированное сообщение на английском языке".equalsIgnoreCase(message.getText())) {
             getSentence(chatId, message);
-            sendMessage.setReplyMarkup(keyboardFactory.closeKeyboard());
             return;
         }
         switch (chatStates.get(chatId)) {
             case START -> toStart(chatId);
             case MENU -> menu(chatId, message);
             case SENTENCE -> getSentence(chatId, message);
-//                case INTERVAL30 -> interlvalTime30(chatId, message);
-//                case INTERVAL60 ->
             default -> unexpectedMessage(chatId);
         }
 
@@ -104,7 +96,6 @@ public class ResponseHandler {
         chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
     }
-
 
     public void stopChat(long chatId) {
         sendMessage.setChatId(chatId);
