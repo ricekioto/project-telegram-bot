@@ -2,8 +2,6 @@ package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserRepository;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,7 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.project_telegram_bot.entity.UserState.*;
+import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 
 public class ResponseHandler {
@@ -107,42 +105,6 @@ public class ResponseHandler {
         sender.execute(sendMessage);
     }
 
-    @Async
-    @Scheduled(cron = "*/10 * * * * *")
-    public void interlvalTime10Second() {
-        try {
-            for (Long instance : every10Seconds) {
-                sendMessage.setChatId(instance);
-                String messageText = englishService.getSentence();
-                sendMessage.setText(messageText);
-                sender.execute(sendMessage);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Scheduled(cron = "0 */30 * * * *")
-    public void interlvalTime30Minute() {
-        for (Long instance : every30Minutes) {
-            sendMessage.setChatId(instance);
-            String messageText = englishService.getSentence();
-            sendMessage.setText(messageText);
-            sender.execute(sendMessage);
-        }
-    }
-
-    @Scheduled(cron = "0 0 * * * *")
-    public void interlvalTime60Minute() {
-        for (Long instance : every60Minutes) {
-            sendMessage.setChatId(instance);
-            String messageText = englishService.getSentence();
-            sendMessage.setText(messageText);
-            sender.execute(sendMessage);
-        }
-    }
-
-
     private void unexpectedMessage(long chatId) {
         sendMessage.setChatId(chatId);
         sendMessage.setText("У меня нет ответа на этот случай. Выбери из предложенных вариантов.");
@@ -166,5 +128,41 @@ public class ResponseHandler {
 
     public boolean userIsActive(Long chatId) {
         return chatStates.containsKey(chatId);
+    }
+
+    public KeyboardFactory getKeyboardFactory() {
+        return keyboardFactory;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+    public EnglishService getEnglishService() {
+        return englishService;
+    }
+
+    public SilentSender getSender() {
+        return sender;
+    }
+
+    public Map<Long, Object> getChatStates() {
+        return chatStates;
+    }
+
+    public List<Long> getEvery10Seconds() {
+        return every10Seconds;
+    }
+
+    public List<Long> getEvery30Minutes() {
+        return every30Minutes;
+    }
+
+    public List<Long> getEvery60Minutes() {
+        return every60Minutes;
+    }
+
+    public SendMessage getSendMessage() {
+        return sendMessage;
     }
 }
