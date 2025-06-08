@@ -12,13 +12,18 @@ import java.util.List;
 public class KeyboardFactory {
     public ReplyKeyboard toStart() {
         KeyboardRow row = new KeyboardRow();
-        row.add("Начать");
+        row.add("/start");
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
-    public ReplyKeyboard getSentence() {
+    public ReplyKeyboard getSentenceAndStop() {
         KeyboardRow row = new KeyboardRow();
-        row.add("Получить сгенерирование сообщение на английском языке");
+        row.add("Получить");
+        row.add("10 секунд");
+        row.add("30 минут");
+        row.add("60 минут");
+        row.add("Не отправлять по расписанию");
+        row.add("Остановить бота");
         return new ReplyKeyboardMarkup(List.of(row));
     }
 
