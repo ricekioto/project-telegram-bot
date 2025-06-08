@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
 
+import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Locality.USER;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 import static org.telegram.abilitybots.api.util.AbilityUtils.fullName;
@@ -63,6 +64,7 @@ public class Bot extends AbilityBot {
 
                     silent.send("Состояние бота сброшено для ВСЕХ пользователей! Все данные пользователей удалены!", chatId);
                 })
+                .action(ctx -> responseHandler.stopChat(ctx.chatId()))
                 .build();
     }
 
@@ -71,9 +73,25 @@ public class Bot extends AbilityBot {
                 .builder()
                 .name("start")
                 .info(Constants.START_DESCRIPTION)
-                .locality(USER)
+                .locality(ALL)
                 .privacy(PUBLIC)
                 .action(ctx -> responseHandler.toStart(ctx.chatId()))
+                .build();
+    }
+
+    public Ability resetCommand() {
+        return Ability.builder()
+                .name("reset")
+                .info("Resets the bot state for this chat only.")
+                .locality(Locality.ALL)
+                .privacy(PUBLIC)
+                .action(ctx -> {
+                    long chatId = ctx.chatId();
+                    // Очищаем Context для текущего пользователя
+                    db.getMap(USER_CONTEXT).remove(chatId);
+                    silent.send("Состояние бота сброшено!", chatId);
+                })
+                .action(ctx -> responseHandler.stopChat(ctx.chatId()))
                 .build();
     }
 
