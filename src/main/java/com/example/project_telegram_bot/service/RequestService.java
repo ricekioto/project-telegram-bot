@@ -7,15 +7,14 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 public class RequestService {
-    @Value("${url.english.generate-website}")
-    private String url;
+
     private RestTemplate restTemplate;
 
     public RequestService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public String getHtml() {
+    public String getHtml(String url) {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return responseEntity.getBody();
