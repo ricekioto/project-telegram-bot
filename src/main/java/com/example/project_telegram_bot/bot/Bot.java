@@ -5,6 +5,7 @@ import com.example.project_telegram_bot.reposiroty.UserRepository;
 import com.example.project_telegram_bot.service.EnglishService;
 import com.example.project_telegram_bot.service.KeyboardFactory;
 import com.example.project_telegram_bot.service.ResponseHandler;
+import com.example.project_telegram_bot.service.TranslatorService;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -28,9 +29,10 @@ public class Bot extends AbilityBot {
     private final UserRepository userRepository;
 
     public Bot(Environment env, UserRepository userRepository,
-               KeyboardFactory keyboardFactory, EnglishService englishService) {
+               KeyboardFactory keyboardFactory, EnglishService englishService,
+               TranslatorService translatorService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandler = new ResponseHandler(silent, db, keyboardFactory, userRepository, englishService);
+        this.responseHandler = new ResponseHandler(silent, db, keyboardFactory, userRepository, englishService, translatorService);
         this.userRepository = userRepository;
     }
 
