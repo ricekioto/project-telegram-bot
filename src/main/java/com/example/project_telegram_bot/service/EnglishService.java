@@ -1,20 +1,23 @@
 package com.example.project_telegram_bot.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EnglishService {
-    private RequestService requestService;
-    private ParsingService parsingService;
+    @Value("${url.english.generate-website}")
+    private String url;
+    private final RequestService requestService;
+    private final ParsingHtmlService parsingHtmlService;
 
-    public EnglishService(RequestService requestService, ParsingService parsingService) {
+    public EnglishService(RequestService requestService, ParsingHtmlService parsingHtmlService) {
         this.requestService = requestService;
-        this.parsingService = parsingService;
+        this.parsingHtmlService = parsingHtmlService;
     }
 
     public String getSentence() {
-        String html = requestService.getHtml();
-        String sentence = parsingService.parsingHtml(html);
+        String html = requestService.getHtml(url);
+        String sentence = parsingHtmlService.parsingHtmlFromGenerationEnglishSentence(html);
         return sentence;
     }
 }
