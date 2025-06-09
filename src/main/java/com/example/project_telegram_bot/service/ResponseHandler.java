@@ -17,6 +17,7 @@ public class ResponseHandler {
     private KeyboardFactory keyboardFactory;
     private UserRepository userRepository;
     private EnglishService englishService;
+    private TranslatorService translatorService;
     private SilentSender sender;
     private Map<Long, Object> chatStates;
     private List<Long> every10Seconds;
@@ -29,10 +30,12 @@ public class ResponseHandler {
                            DBContext db,
                            KeyboardFactory keyboardFactory,
                            UserRepository userRepository,
-                           EnglishService englishService) {
+                           EnglishService englishService,
+                           TranslatorService translatorService) {
         this.keyboardFactory = keyboardFactory;
         this.userRepository = userRepository;
         this.englishService = englishService;
+        this.translatorService = translatorService;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
@@ -101,6 +104,8 @@ public class ResponseHandler {
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
         String messageText = englishService.getSentence();
+        String translatedText = translatorService.getTranslatedText(messageText);
+        String returnText = messageText + "\nПеревод.\n" + translatedText;
         sendMessage.setText(messageText);
         sender.execute(sendMessage);
     }
