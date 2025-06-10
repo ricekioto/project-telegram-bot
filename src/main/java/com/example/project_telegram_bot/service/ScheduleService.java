@@ -15,14 +15,14 @@ import java.util.List;
 public class ScheduleService {
     private SilentSender sender;
     private SendMessage sendMessage;
-    private EnglishService englishService;
+    private EnglishRandomService englishRandomService;
     private ResponseHandler responseHandler;
     private List<Long> every10Seconds;
     private List<Long> every30Minutes;
     private List<Long> every60Minutes;
 
-    public ScheduleService(EnglishService englishService, Bot bot) {
-        this.englishService = englishService;
+    public ScheduleService(EnglishRandomService englishRandomService, Bot bot) {
+        this.englishRandomService = englishRandomService;
         this.responseHandler = bot.getResponseHandler();
         this.sendMessage = responseHandler.getSendMessage();
         this.sender = responseHandler.getSender();
@@ -37,7 +37,7 @@ public class ScheduleService {
         try {
             for (Long instance : every10Seconds) {
                 sendMessage.setChatId(instance);
-                String messageText = englishService.getSentence();
+                String messageText = englishRandomService.getSentence();
                 sendMessage.setText(messageText);
                 sender.execute(sendMessage);
             }
@@ -52,7 +52,7 @@ public class ScheduleService {
         try {
             for (Long instance : every30Minutes) {
                 sendMessage.setChatId(instance);
-                String messageText = englishService.getSentence();
+                String messageText = englishRandomService.getSentence();
                 sendMessage.setText(messageText);
                 sender.execute(sendMessage);
             }
@@ -67,7 +67,7 @@ public class ScheduleService {
         try {
             for (Long instance : every60Minutes) {
                 sendMessage.setChatId(instance);
-                String messageText = englishService.getSentence();
+                String messageText = englishRandomService.getSentence();
                 sendMessage.setText(messageText);
                 sender.execute(sendMessage);
             }
