@@ -14,13 +14,16 @@ public class ParsingHtmlService {
     public String parsingHtmlFromGenerationEnglishSentence(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.getElementsByClass(cssSelectorForGeneration);
+        if (elements.size() == 0)
+            return "the element does not exist";
         return elements.getFirst().text();
     }
 
     public String parsingHtmlFromTranslator(String html) {
         Document doc = Jsoup.parse(html);
         Elements elements = doc.getElementsByClass(cssSelectorForTranslator);
+        if (elements.size() == 0)
+            return "the element does not exist";
         return elements.getFirst().text();
     }
-
 }
