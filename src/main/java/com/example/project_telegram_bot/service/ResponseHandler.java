@@ -16,7 +16,7 @@ import static com.example.project_telegram_bot.entity.UserState.MENU;
 public class ResponseHandler {
     private KeyboardFactory keyboardFactory;
     private UserRepository userRepository;
-    private EnglishService englishService;
+    private EnglishRandomService englishRandomService;
     private TranslatorService translatorService;
     private SilentSender sender;
     private Map<Long, Object> chatStates;
@@ -30,11 +30,11 @@ public class ResponseHandler {
                            DBContext db,
                            KeyboardFactory keyboardFactory,
                            UserRepository userRepository,
-                           EnglishService englishService,
+                           EnglishRandomService englishRandomService,
                            TranslatorService translatorService) {
         this.keyboardFactory = keyboardFactory;
         this.userRepository = userRepository;
-        this.englishService = englishService;
+        this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
@@ -103,10 +103,12 @@ public class ResponseHandler {
 
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
-        String messageText = englishService.getSentence();
+        String messageText = englishRandomService.getSentence();
         String translatedText = translatorService.getTranslatedText(messageText);
-        String returnText = messageText + "\nПеревод.\n" + translatedText;
+        //translatedText = escapeMarkdownV2(translatedText);
+        //String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
         sendMessage.setText(messageText);
+        //sendMessage.setParseMode("MARKDOWNV2");
         sender.execute(sendMessage);
     }
 
@@ -122,13 +124,31 @@ public class ResponseHandler {
         every10Seconds.remove(chatId);
         every30Minutes.remove(chatId);
         every60Minutes.remove(chatId);
-        chatStates.clear();
-        every10Seconds.clear();
-        every30Minutes.clear();
-        every60Minutes.clear();
         sendMessage.setText("Бот остановлен");
         sendMessage.setReplyMarkup(keyboardFactory.toStart());
         sender.execute(sendMessage);
+    }
+
+    public static String escapeMarkdownV2(String text) {
+        String escapedText = text.replace("_", "\\_")
+                .replace("*", "\\*")
+                .replace("[", "\\[")
+                .replace("]", "\\]")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("~", "\\~")
+                .replace("`", "\\`")
+                .replace(">", "\\>")
+                .replace("#", "\\#")
+                .replace("+", "\\+")
+                .replace("-", "\\-")
+                .replace("=", "\\=")
+                .replace("|", "\\|")
+                .replace("{", "\\{")
+                .replace("}", "\\}")
+                .replace(".", "\\.")
+                .replace("!", "\\!");
+        return escapedText;
     }
 
     public boolean userIsActive(Long chatId) {
@@ -143,8 +163,8 @@ public class ResponseHandler {
         return userRepository;
     }
 
-    public EnglishService getEnglishService() {
-        return englishService;
+    public EnglishRandomService getEnglishService() {
+        return englishRandomService;
     }
 
     public SilentSender getSender() {
