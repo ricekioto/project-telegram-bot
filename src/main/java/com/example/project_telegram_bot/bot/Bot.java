@@ -4,7 +4,7 @@ import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserRepository;
 import com.example.project_telegram_bot.service.EnglishRandomService;
 import com.example.project_telegram_bot.service.KeyboardFactory;
-import com.example.project_telegram_bot.service.ResponseHandler;
+import com.example.project_telegram_bot.service.ResponseHandlerService;
 import com.example.project_telegram_bot.service.TranslatorService;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -25,14 +25,14 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Component
 public class Bot extends AbilityBot {
-    private final ResponseHandler responseHandler;
+    private final ResponseHandlerService responseHandlerService;
     private final UserRepository userRepository;
 
     public Bot(Environment env, UserRepository userRepository,
                KeyboardFactory keyboardFactory, EnglishRandomService englishRandomService,
                TranslatorService translatorService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandler = new ResponseHandler(silent, db, keyboardFactory, userRepository, englishRandomService, translatorService);
+        this.responseHandlerService = new ResponseHandlerService(silent, db, keyboardFactory, userRepository, englishRandomService, translatorService);
         this.userRepository = userRepository;
     }
 
@@ -43,7 +43,7 @@ public class Bot extends AbilityBot {
                 .info(Constants.START_DESCRIPTION)
                 .locality(ALL)
                 .privacy(PUBLIC)
-                .action(ctx -> responseHandler.toStart(ctx.chatId()))
+                .action(ctx -> responseHandlerService.toStart(ctx.chatId()))
                 .build();
     }
 
@@ -62,8 +62,8 @@ public class Bot extends AbilityBot {
     }
 
     public Reply replyToButtons() {
-        BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandler.replyToButtons(getChatId(upd), upd.getMessage());
-        return Reply.of(action, Flag.TEXT, upd -> responseHandler.userIsActive(getChatId(upd)));
+        BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandlerService.replyToButtons(getChatId(upd), upd.getMessage());
+        return Reply.of(action, Flag.TEXT, upd -> responseHandlerService.userIsActive(getChatId(upd)));
     }
 
     @Override
@@ -71,8 +71,8 @@ public class Bot extends AbilityBot {
         return 1L;
     }
 
-    public ResponseHandler getResponseHandler() {
-        return responseHandler;
+    public ResponseHandlerService getResponseHandler() {
+        return responseHandlerService;
     }
 
     public UserRepository getUserRepository() {
