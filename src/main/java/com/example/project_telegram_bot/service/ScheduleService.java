@@ -16,19 +16,19 @@ public class ScheduleService {
     private SilentSender sender;
     private SendMessage sendMessage;
     private EnglishRandomService englishRandomService;
-    private ResponseHandler responseHandler;
+    private ResponseHandlerService responseHandlerService;
     private List<Long> every10Seconds;
     private List<Long> every30Minutes;
     private List<Long> every60Minutes;
 
     public ScheduleService(EnglishRandomService englishRandomService, Bot bot) {
         this.englishRandomService = englishRandomService;
-        this.responseHandler = bot.getResponseHandler();
-        this.sendMessage = responseHandler.getSendMessage();
-        this.sender = responseHandler.getSender();
-        every10Seconds = responseHandler.getEvery10Seconds();
-        every30Minutes = responseHandler.getEvery30Minutes();
-        every60Minutes = responseHandler.getEvery60Minutes();
+        this.responseHandlerService = bot.getResponseHandler();
+        this.sendMessage = responseHandlerService.getSendMessage();
+        this.sender = responseHandlerService.getSender();
+        every10Seconds = responseHandlerService.getEvery10Seconds();
+        every30Minutes = responseHandlerService.getEvery30Minutes();
+        every60Minutes = responseHandlerService.getEvery60Minutes();
     }
 
     @Async

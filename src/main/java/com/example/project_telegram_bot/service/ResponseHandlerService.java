@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 
-public class ResponseHandler {
+public class ResponseHandlerService {
     private KeyboardFactory keyboardFactory;
     private UserRepository userRepository;
     private EnglishRandomService englishRandomService;
@@ -26,12 +26,12 @@ public class ResponseHandler {
     private SendMessage sendMessage;
 
 
-    public ResponseHandler(SilentSender silentSender,
-                           DBContext db,
-                           KeyboardFactory keyboardFactory,
-                           UserRepository userRepository,
-                           EnglishRandomService englishRandomService,
-                           TranslatorService translatorService) {
+    public ResponseHandlerService(SilentSender silentSender,
+                                  DBContext db,
+                                  KeyboardFactory keyboardFactory,
+                                  UserRepository userRepository,
+                                  EnglishRandomService englishRandomService,
+                                  TranslatorService translatorService) {
         this.keyboardFactory = keyboardFactory;
         this.userRepository = userRepository;
         this.englishRandomService = englishRandomService;
