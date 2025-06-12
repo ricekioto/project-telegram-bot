@@ -1,6 +1,7 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.bot.Bot;
+import com.example.project_telegram_bot.error.ScheduleServiceException;
 import lombok.Getter;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,46 +34,34 @@ public class ScheduleService {
 
     @Async
     @Scheduled(cron = "*/10 * * * * *")
-    public void interlvalTime10Second() {
-        try {
-            for (Long instance : every10Seconds) {
-                sendMessage.setChatId(instance);
-                String messageText = englishRandomService.getSentence();
-                sendMessage.setText(messageText);
-                sender.execute(sendMessage);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void interlvalTime10Second() throws ScheduleServiceException {
+        for (Long instance : every10Seconds) {
+            sendMessage.setChatId(instance);
+            String messageText = englishRandomService.getSentence();
+            sendMessage.setText(messageText);
+            sender.execute(sendMessage);
         }
     }
 
     @Async
     @Scheduled(cron = "0 */30 * * * *")
-    public void interlvalTime30Minute() {
-        try {
-            for (Long instance : every30Minutes) {
-                sendMessage.setChatId(instance);
-                String messageText = englishRandomService.getSentence();
-                sendMessage.setText(messageText);
-                sender.execute(sendMessage);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void interlvalTime30Minute() throws ScheduleServiceException {
+        for (Long instance : every30Minutes) {
+            sendMessage.setChatId(instance);
+            String messageText = englishRandomService.getSentence();
+            sendMessage.setText(messageText);
+            sender.execute(sendMessage);
         }
     }
 
     @Async
     @Scheduled(cron = "0 0 * * * *")
-    public void interlvalTime60Minute() {
-        try {
-            for (Long instance : every60Minutes) {
-                sendMessage.setChatId(instance);
-                String messageText = englishRandomService.getSentence();
-                sendMessage.setText(messageText);
-                sender.execute(sendMessage);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void interlvalTime60Minute() throws ScheduleServiceException {
+        for (Long instance : every60Minutes) {
+            sendMessage.setChatId(instance);
+            String messageText = englishRandomService.getSentence();
+            sendMessage.setText(messageText);
+            sender.execute(sendMessage);
         }
     }
 }
