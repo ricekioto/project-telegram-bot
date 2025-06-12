@@ -17,24 +17,15 @@ public class EnglishRandomService {
         this.parsingHtmlService = parsingHtmlService;
     }
 
-    public String getSentence() {
-        try {
-            String html = requestService.getHtml(url);
-            if (html == null) {
-                throw new RandomSentenceServiceException("Не удалось получить HTML от " + url);
-            }
-            String sentence = parsingHtmlService.parsingHtmlFromGenerationEnglishSentence(html);
-            if (sentence == null || sentence.trim().isEmpty() || sentence.equals("the element does not exist")) {
-                throw new RandomSentenceNotFoundException("Предложение не найдено на странице.");
-            }
-            return sentence;
-        } catch (RandomSentenceNotFoundException e) {
-            throw e;
-        } catch (RandomSentenceServiceException e) {
-            throw e;
+    public String getSentence() throws RandomSentenceServiceException {
+        String html = requestService.getHtml(url);
+        if (html == null) {
+            throw new RandomSentenceServiceException("Не удалось получить HTML от " + url);
         }
-        catch (Exception e) {
-            throw new RandomSentenceServiceException("Неожиданная ошибка при получении предложения: " + e.getMessage(), e);
+        String sentence = parsingHtmlService.parsingHtmlFromGenerationEnglishSentence(html);
+        if (sentence == null || sentence.trim().isEmpty() || sentence.equals("the element does not exist")) {
+            throw new RandomSentenceNotFoundException("Предложение не найдено на странице.");
         }
+        return sentence;
     }
 }
