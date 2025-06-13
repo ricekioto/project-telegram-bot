@@ -108,7 +108,7 @@ public class ResponseHandlerService {
 //        translatedText = escapeMarkdownV2(translatedText);
 //        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
         sendMessage.setText(messageText);
-        //sendMessage.setParseMode("MARKDOWNV2");
+//        sendMessage.setParseMode("MARKDOWNV2");
         sender.execute(sendMessage);
     }
 
