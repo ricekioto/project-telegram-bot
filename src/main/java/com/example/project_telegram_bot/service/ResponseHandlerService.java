@@ -129,28 +129,6 @@ public class ResponseHandlerService {
         sender.execute(sendMessage);
     }
 
-    public static String escapeMarkdownV2(String text) {
-        String escapedText = text.replace("_", "\\_")
-                .replace("*", "\\*")
-                .replace("[", "\\[")
-                .replace("]", "\\]")
-                .replace("(", "\\(")
-                .replace(")", "\\)")
-                .replace("~", "\\~")
-                .replace("`", "\\`")
-                .replace(">", "\\>")
-                .replace("#", "\\#")
-                .replace("+", "\\+")
-                .replace("-", "\\-")
-                .replace("=", "\\=")
-                .replace("|", "\\|")
-                .replace("{", "\\{")
-                .replace("}", "\\}")
-                .replace(".", "\\.")
-                .replace("!", "\\!");
-        return escapedText;
-    }
-
     public boolean userIsActive(Long chatId) {
         return chatStates.containsKey(chatId);
     }
