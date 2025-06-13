@@ -1,7 +1,7 @@
 package com.example.project_telegram_bot.bot;
 
 import com.example.project_telegram_bot.entity.Constants;
-import com.example.project_telegram_bot.reposiroty.UserRepository;
+import com.example.project_telegram_bot.reposiroty.UserTgRepository;
 import com.example.project_telegram_bot.service.EnglishRandomService;
 import com.example.project_telegram_bot.service.KeyboardFactory;
 import com.example.project_telegram_bot.service.ResponseHandlerService;
@@ -26,14 +26,14 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 @Component
 public class Bot extends AbilityBot {
     private final ResponseHandlerService responseHandlerService;
-    private final UserRepository userRepository;
+    private final UserTgRepository userTgRepository;
 
-    public Bot(Environment env, UserRepository userRepository,
+    public Bot(Environment env, UserTgRepository userTgRepository,
                KeyboardFactory keyboardFactory, EnglishRandomService englishRandomService,
                TranslatorService translatorService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandlerService = new ResponseHandlerService(silent, db, keyboardFactory, userRepository, englishRandomService, translatorService);
-        this.userRepository = userRepository;
+        this.responseHandlerService = new ResponseHandlerService(silent, db, keyboardFactory, userTgRepository, englishRandomService, translatorService);
+        this.userTgRepository = userTgRepository;
     }
 
     public Ability startBot() {
@@ -75,7 +75,7 @@ public class Bot extends AbilityBot {
         return responseHandlerService;
     }
 
-    public UserRepository getUserRepository() {
-        return userRepository;
+    public UserTgRepository getUserTgRepository() {
+        return userTgRepository;
     }
 }
