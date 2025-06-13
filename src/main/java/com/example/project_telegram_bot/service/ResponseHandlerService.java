@@ -1,7 +1,7 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
-import com.example.project_telegram_bot.reposiroty.UserRepository;
+import com.example.project_telegram_bot.reposiroty.UserTgRepository;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -15,7 +15,7 @@ import static com.example.project_telegram_bot.entity.UserState.MENU;
 
 public class ResponseHandlerService {
     private KeyboardFactory keyboardFactory;
-    private UserRepository userRepository;
+    private UserTgRepository userTgRepository;
     private EnglishRandomService englishRandomService;
     private TranslatorService translatorService;
     private SilentSender sender;
@@ -29,11 +29,11 @@ public class ResponseHandlerService {
     public ResponseHandlerService(SilentSender silentSender,
                                   DBContext db,
                                   KeyboardFactory keyboardFactory,
-                                  UserRepository userRepository,
+                                  UserTgRepository userTgRepository,
                                   EnglishRandomService englishRandomService,
                                   TranslatorService translatorService) {
         this.keyboardFactory = keyboardFactory;
-        this.userRepository = userRepository;
+        this.userTgRepository = userTgRepository;
         this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
         sender = silentSender;
@@ -104,9 +104,9 @@ public class ResponseHandlerService {
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
         String messageText = englishRandomService.getSentence();
-        String translatedText = translatorService.getTranslatedText(messageText);
-        //translatedText = escapeMarkdownV2(translatedText);
-        //String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
+//        String translatedText = translatorService.getTranslatedText(messageText);
+//        translatedText = escapeMarkdownV2(translatedText);
+//        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
         sendMessage.setText(messageText);
         //sendMessage.setParseMode("MARKDOWNV2");
         sender.execute(sendMessage);
@@ -159,8 +159,8 @@ public class ResponseHandlerService {
         return keyboardFactory;
     }
 
-    public UserRepository getUserRepository() {
-        return userRepository;
+    public UserTgRepository getUserTgRepository() {
+        return userTgRepository;
     }
 
     public EnglishRandomService getEnglishService() {
