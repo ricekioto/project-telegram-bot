@@ -38,7 +38,6 @@ public class Bot extends AbilityBot {
         return Ability
                 .builder()
                 .name("start")
-                .info(Constants.START_DESCRIPTION)
                 .locality(ALL)
                 .privacy(PUBLIC)
                 .action(ctx -> responseHandlerService.toStart(ctx.chatId()))
@@ -48,7 +47,6 @@ public class Bot extends AbilityBot {
     public Ability resetCommand() {
         return Ability.builder()
                 .name("reset")
-                .info("Resets the bot state for this chat only.")
                 .locality(Locality.ALL)
                 .privacy(PUBLIC)
                 .action(ctx -> {
