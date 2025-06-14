@@ -16,7 +16,7 @@ public class TranslatorService {
 
     public String getTranslatedText(String text) {
         String validateUrl = parsingUrlService.buildTranslationUrl(text);
-        String html = requestService.getHtml(validateUrl);
+        String html = requestService.getEntity(validateUrl);
         String translatedText = parsingHtmlService.parsingHtmlFromTranslator(html);
         return translatedText;
     }
