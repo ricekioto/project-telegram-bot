@@ -1,4 +1,4 @@
-package com.example.project_telegram_bot.entity;
+package com.example.project_telegram_bot.enums;
 
 public enum UserState {
     START,
