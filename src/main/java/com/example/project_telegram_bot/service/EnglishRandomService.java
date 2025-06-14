@@ -17,8 +17,8 @@ public class EnglishRandomService {
         this.parsingHtmlService = parsingHtmlService;
     }
 
-    public String getSentence() throws RandomSentenceServiceException {
-        String html = requestService.getHtml(url);
+    public String getSentence() {
+        String html = requestService.getEntity(url);
         if (html == null) {
             throw new RandomSentenceServiceException("Не удалось получить HTML от " + url);
         }
