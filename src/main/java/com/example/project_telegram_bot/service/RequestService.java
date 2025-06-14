@@ -13,7 +13,7 @@ public class RequestService {
         this.restTemplate = restTemplate;
     }
 
-    public String getHtml(String url) throws RequestServiceException {
+    public String getEntity(String url) throws RequestServiceException {
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             return responseEntity.getBody();
