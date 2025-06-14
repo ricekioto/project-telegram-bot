@@ -2,10 +2,7 @@ package com.example.project_telegram_bot.bot;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
-import com.example.project_telegram_bot.service.EnglishRandomService;
-import com.example.project_telegram_bot.service.KeyboardFactory;
-import com.example.project_telegram_bot.service.ResponseHandlerService;
-import com.example.project_telegram_bot.service.TranslatorService;
+import com.example.project_telegram_bot.service.*;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -30,9 +27,10 @@ public class Bot extends AbilityBot {
 
     public Bot(Environment env, UserTgRepository userTgRepository,
                KeyboardFactory keyboardFactory, EnglishRandomService englishRandomService,
-               TranslatorService translatorService) {
+               TranslatorService translatorService, RequestService requestService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandlerService = new ResponseHandlerService(silent, db, keyboardFactory, userTgRepository, englishRandomService, translatorService);
+        this.responseHandlerService = new ResponseHandlerService(silent,
+                db, keyboardFactory, userTgRepository, englishRandomService, translatorService, requestService);
         this.userTgRepository = userTgRepository;
     }
 
