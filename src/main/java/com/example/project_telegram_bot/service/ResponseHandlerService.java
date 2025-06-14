@@ -2,6 +2,7 @@ package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,14 +11,20 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.project_telegram_bot.entity.UserState.MENU;
+import static com.example.project_telegram_bot.entity.Constants.ANOTHER_ANSWER;
+import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
+import static com.example.project_telegram_bot.enums.UserState.MENU;
 
 
 public class ResponseHandlerService {
+    @Value("${url.english.random-controller}")
+    private String urlRandomSentenceController;
+
     private KeyboardFactory keyboardFactory;
     private UserTgRepository userTgRepository;
     private EnglishRandomService englishRandomService;
     private TranslatorService translatorService;
+    private RequestService requestService;
     private SilentSender sender;
     private Map<Long, Object> chatStates;
     private List<Long> every10Seconds;
@@ -31,11 +38,13 @@ public class ResponseHandlerService {
                                   KeyboardFactory keyboardFactory,
                                   UserTgRepository userTgRepository,
                                   EnglishRandomService englishRandomService,
-                                  TranslatorService translatorService) {
+                                  TranslatorService translatorService,
+                                  RequestService requestService) {
         this.keyboardFactory = keyboardFactory;
         this.userTgRepository = userTgRepository;
         this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
+        this.requestService = requestService;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
@@ -103,7 +112,7 @@ public class ResponseHandlerService {
 
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
-        String messageText = englishRandomService.getSentence();
+        String messageText = requestService.getEntity(urlRandomSentenceController);
 //        String translatedText = translatorService.getTranslatedText(messageText);
 //        translatedText = escapeMarkdownV2(translatedText);
 //        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
@@ -114,7 +123,7 @@ public class ResponseHandlerService {
 
     private void unexpectedMessage(long chatId) {
         sendMessage.setChatId(chatId);
-        sendMessage.setText("У меня нет ответа на этот случай. Выбери из предложенных вариантов.");
+        sendMessage.setText(ANOTHER_ANSWER);
         sender.execute(sendMessage);
     }
 
@@ -124,7 +133,7 @@ public class ResponseHandlerService {
         every10Seconds.remove(chatId);
         every30Minutes.remove(chatId);
         every60Minutes.remove(chatId);
-        sendMessage.setText("Бот остановлен");
+        sendMessage.setText(CHAT_CLOSE);
         sendMessage.setReplyMarkup(keyboardFactory.toStart());
         sender.execute(sendMessage);
     }
