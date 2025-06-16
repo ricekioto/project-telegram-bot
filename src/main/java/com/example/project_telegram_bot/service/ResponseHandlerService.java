@@ -61,6 +61,7 @@ public class ResponseHandlerService {
         sendMessage.setReplyMarkup(keyboardFactory.getSentenceAndStop());
         chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
+
     }
 
     public void replyToButtons(long chatId, Message message) {
