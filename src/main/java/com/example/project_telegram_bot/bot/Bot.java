@@ -1,6 +1,5 @@
 package com.example.project_telegram_bot.bot;
 
-import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
 import com.example.project_telegram_bot.service.*;
 import org.springframework.core.env.Environment;
