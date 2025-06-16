@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 public class SendMessageConfig {
 
     @Bean
-    public SendMessage sendMessage(){
+    public SendMessage sendMessage() {
         return new SendMessage();
     }
 }
