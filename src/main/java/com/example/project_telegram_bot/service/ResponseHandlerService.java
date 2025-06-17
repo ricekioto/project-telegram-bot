@@ -20,7 +20,7 @@ public class ResponseHandlerService {
     @Value("${url.english.random-controller}")
     private String urlRandomSentenceController;
 
-    private KeyboardFactory keyboardFactory;
+    private KeyboardFactoryService keyboardFactoryService;
     private UserTgRepository userTgRepository;
     private EnglishRandomService englishRandomService;
     private TranslatorService translatorService;
@@ -35,12 +35,12 @@ public class ResponseHandlerService {
 
     public ResponseHandlerService(SilentSender silentSender,
                                   DBContext db,
-                                  KeyboardFactory keyboardFactory,
+                                  KeyboardFactoryService keyboardFactoryService,
                                   UserTgRepository userTgRepository,
                                   EnglishRandomService englishRandomService,
                                   TranslatorService translatorService,
                                   RequestService requestService) {
-        this.keyboardFactory = keyboardFactory;
+        this.keyboardFactoryService = keyboardFactoryService;
         this.userTgRepository = userTgRepository;
         this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
@@ -58,7 +58,7 @@ public class ResponseHandlerService {
         sendMessage.setText("Нажми на кнопку \"Получить\" для получения " +
                 "сгенерированного предложения на английском языке.\n" +
                 "Или можешь выбрать время, которое будет отправляться с выбранным периодом времени.");
-        sendMessage.setReplyMarkup(keyboardFactory.getSentenceAndStop());
+        sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
         chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
 
@@ -135,7 +135,7 @@ public class ResponseHandlerService {
         every30Minutes.remove(chatId);
         every60Minutes.remove(chatId);
         sendMessage.setText(CHAT_CLOSE);
-        sendMessage.setReplyMarkup(keyboardFactory.toStart());
+        sendMessage.setReplyMarkup(keyboardFactoryService.toStart());
         sender.execute(sendMessage);
     }
 
@@ -143,8 +143,8 @@ public class ResponseHandlerService {
         return chatStates.containsKey(chatId);
     }
 
-    public KeyboardFactory getKeyboardFactory() {
-        return keyboardFactory;
+    public KeyboardFactoryService getKeyboardFactory() {
+        return keyboardFactoryService;
     }
 
     public UserTgRepository getUserTgRepository() {
