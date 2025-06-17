@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import java.util.List;
 
 @Service
-public class KeyboardFactory {
+public class KeyboardFactoryService {
     public ReplyKeyboard toStart() {
         KeyboardRow row = new KeyboardRow();
         row.add("/start");
