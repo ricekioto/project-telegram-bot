@@ -1,6 +1,6 @@
 package com.example.project_telegram_bot.error;
 
-public class ElementNotFoundException extends ParsingHtmlException {
+public class ElementNotFoundException extends RuntimeException {
 
     public ElementNotFoundException(String message) {
         super(message);
