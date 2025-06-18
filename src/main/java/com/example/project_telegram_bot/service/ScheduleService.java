@@ -35,6 +35,9 @@ public class ScheduleService {
     @Async
     @Scheduled(cron = "*/10 * * * * *")
     public void interlvalTime10Second() throws ScheduleServiceException {
+        if (every10Seconds.isEmpty()){
+            return;
+        }
         String messageText = englishRandomService.getSentence();
         for (Long instance : every10Seconds) {
             sendMessage.setChatId(instance);
@@ -46,6 +49,9 @@ public class ScheduleService {
     @Async
     @Scheduled(cron = "0 */30 * * * *")
     public void interlvalTime30Minute() throws ScheduleServiceException {
+        if (every30Minutes.isEmpty()){
+            return;
+        }
         String messageText = englishRandomService.getSentence();
         for (Long instance : every30Minutes) {
             sendMessage.setChatId(instance);
@@ -57,6 +63,9 @@ public class ScheduleService {
     @Async
     @Scheduled(cron = "0 0 * * * *")
     public void interlvalTime60Minute() throws ScheduleServiceException {
+        if (every60Minutes.isEmpty()){
+            return;
+        }
         String messageText = englishRandomService.getSentence();
         for (Long instance : every60Minutes) {
             sendMessage.setChatId(instance);
