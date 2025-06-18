@@ -10,6 +10,7 @@ import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Flag;
 import org.telegram.abilitybots.api.objects.Locality;
 import org.telegram.abilitybots.api.objects.Reply;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.function.BiConsumer;
@@ -26,10 +27,12 @@ public class Bot extends AbilityBot {
 
     public Bot(Environment env, UserTgRepository userTgRepository,
                KeyboardFactoryService keyboardFactoryService, EnglishRandomService englishRandomService,
-               TranslatorService translatorService, RequestService requestService) {
+               TranslatorService translatorService, RequestService requestService, SendMessage sendMessage) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandlerService = new ResponseHandlerService(silent,
-                db, keyboardFactoryService, userTgRepository, englishRandomService, translatorService, requestService);
+        this.responseHandlerService = new ResponseHandlerService(silent, db,
+                keyboardFactoryService, userTgRepository,
+                englishRandomService, translatorService,
+                requestService, sendMessage);
         this.userTgRepository = userTgRepository;
     }
 
@@ -51,7 +54,6 @@ public class Bot extends AbilityBot {
                 .action(ctx -> {
                     long chatId = ctx.chatId();
                     db.getMap(CHAT_STATES).remove(chatId);
-                    silent.send("Состояние бота сброшено!", chatId);
                 })
                 .build();
     }
