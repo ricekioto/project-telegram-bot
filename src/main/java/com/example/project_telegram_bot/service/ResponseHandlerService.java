@@ -16,7 +16,7 @@ import static com.example.project_telegram_bot.enums.UserState.MENU;
 
 
 public class ResponseHandlerService {
-    private String urlRandomSentenceController = "http://localhost:8080/api/random/sentence";
+    private final String URL_RANDOM_SENTENCE_CONTROLLER = "http://localhost:8080/api/random/sentence";
 
     private KeyboardFactoryService keyboardFactoryService;
     private UserTgRepository userTgRepository;
