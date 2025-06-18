@@ -2,7 +2,6 @@ package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,8 +16,7 @@ import static com.example.project_telegram_bot.enums.UserState.MENU;
 
 
 public class ResponseHandlerService {
-    @Value("${url.english.random-controller}")
-    private String urlRandomSentenceController;
+    private String urlRandomSentenceController = "http://localhost:8080/api/random/sentence";
 
     private KeyboardFactoryService keyboardFactoryService;
     private UserTgRepository userTgRepository;
@@ -39,18 +37,19 @@ public class ResponseHandlerService {
                                   UserTgRepository userTgRepository,
                                   EnglishRandomService englishRandomService,
                                   TranslatorService translatorService,
-                                  RequestService requestService) {
+                                  RequestService requestService,
+                                  SendMessage sendMessage) {
         this.keyboardFactoryService = keyboardFactoryService;
         this.userTgRepository = userTgRepository;
         this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
         this.requestService = requestService;
+        this.sendMessage = sendMessage;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
         every30Minutes = db.getList(Constants.CHATS_EVERY_30_MINUTES);
         every60Minutes = db.getList(Constants.CHATS_EVERY_60_MINUTES);
-        sendMessage = new SendMessage();
     }
 
     public void toStart(long chatId) {
@@ -113,7 +112,8 @@ public class ResponseHandlerService {
 
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
-        String messageText = requestService.getEntity(urlRandomSentenceController);
+//        String messageText = requestService.getEntity(urlRandomSentenceController);
+        String messageText = englishRandomService.getSentence();
 //        String translatedText = translatorService.getTranslatedText(messageText);
 //        translatedText = escapeMarkdownV2(translatedText);
 //        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
@@ -134,6 +134,10 @@ public class ResponseHandlerService {
         every10Seconds.remove(chatId);
         every30Minutes.remove(chatId);
         every60Minutes.remove(chatId);
+        chatStates.clear();
+        every10Seconds.clear();
+        every30Minutes.clear();
+        every60Minutes.clear();
         sendMessage.setText(CHAT_CLOSE);
         sendMessage.setReplyMarkup(keyboardFactoryService.toStart());
         sender.execute(sendMessage);
