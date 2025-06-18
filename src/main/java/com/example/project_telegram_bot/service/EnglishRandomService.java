@@ -11,13 +11,16 @@ public class EnglishRandomService {
     private String url;
     private final RequestService requestService;
     private final ParsingHtmlService parsingHtmlService;
+    private final ParsingUrlService parsingUrlService;
 
-    public EnglishRandomService(RequestService requestService, ParsingHtmlService parsingHtmlService) {
+    public EnglishRandomService(RequestService requestService, ParsingHtmlService parsingHtmlService, ParsingUrlService parsingUrlService) {
         this.requestService = requestService;
+        this.parsingUrlService = parsingUrlService;
         this.parsingHtmlService = parsingHtmlService;
     }
 
     public String getSentence() {
+        String url = parsingUrlService.getGeneraterUrl();
         String html = requestService.getEntity(url);
         if (html == null) {
             throw new RandomSentenceServiceException("Не удалось получить HTML от " + url);
