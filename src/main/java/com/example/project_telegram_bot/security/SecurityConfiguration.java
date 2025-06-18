@@ -21,5 +21,6 @@ public class SecurityConfiguration {
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                 .requestMatchers(GET, "/api/random/sentence").permitAll());
         return http.build();
+
     }
 }
