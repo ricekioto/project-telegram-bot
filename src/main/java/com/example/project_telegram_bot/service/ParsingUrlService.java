@@ -8,10 +8,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ParsingUrlService {
     @Value("${url.english.translate-website}")
     private String translationUrl;
+    @Value("${url.english.generate-website}")
+    private String generatorUrl;
     private final String SOURCE_LANG = "en"; // Язык оригинала
-    private final String TARGET_LANG = "ru"; // Язык перевода
+    private final String TARGET_LANG = "ru";
+    private final String QUANTITY = "1";
 
-    public String buildTranslationUrl(String text) {
+
+    public String getTranslationUrl(String text) {
         String encodedText = UriComponentsBuilder.fromUriString(text).build().encode().toString();
 
         String url = UriComponentsBuilder.fromUriString(translationUrl)
@@ -21,6 +25,14 @@ public class ParsingUrlService {
                 .build()
                 .toUriString();
 
+        return url;
+    }
+
+    public String getGeneraterUrl() {
+        String url = UriComponentsBuilder.fromUriString(generatorUrl)
+                .queryParam("quantity", QUANTITY)
+                .build()
+                .toUriString();
         return url;
     }
 }
