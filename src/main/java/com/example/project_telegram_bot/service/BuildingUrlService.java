@@ -5,14 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-public class ParsingUrlService {
+public class BuildingUrlService {
     @Value("${url.english.translate-website}")
     private String translationUrl;
     @Value("${url.english.generate-website}")
     private String generatorUrl;
     private final String SOURCE_LANG = "en"; // Язык оригинала
     private final String TARGET_LANG = "ru";
-    private final String QUANTITY = "1";
+    private final String COUNT = "1";
+    private final String LANGUAGE = "eng";
 
 
     public String getTranslationUrl(String text) {
@@ -30,7 +31,8 @@ public class ParsingUrlService {
 
     public String getGeneraterUrl() {
         String url = UriComponentsBuilder.fromUriString(generatorUrl)
-                .queryParam("quantity", QUANTITY)
+                .queryParam("language", LANGUAGE)
+                .queryParam("count", COUNT)
                 .build()
                 .toUriString();
         return url;
