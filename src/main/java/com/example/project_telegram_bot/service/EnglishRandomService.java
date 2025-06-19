@@ -1,5 +1,6 @@
 package com.example.project_telegram_bot.service;
 
+import com.example.project_telegram_bot.entity.SentenceResponse;
 import com.example.project_telegram_bot.error.RandomSentenceNotFoundException;
 import com.example.project_telegram_bot.error.RandomSentenceServiceException;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,21 +12,21 @@ public class EnglishRandomService {
     private String url;
     private final RequestService requestService;
     private final ParsingHtmlService parsingHtmlService;
-    private final ParsingUrlService parsingUrlService;
+    private final BuildingUrlService buildingUrlService;
 
-    public EnglishRandomService(RequestService requestService, ParsingHtmlService parsingHtmlService, ParsingUrlService parsingUrlService) {
+    public EnglishRandomService(RequestService requestService, ParsingHtmlService parsingHtmlService, BuildingUrlService buildingUrlService) {
         this.requestService = requestService;
-        this.parsingUrlService = parsingUrlService;
+        this.buildingUrlService = buildingUrlService;
         this.parsingHtmlService = parsingHtmlService;
     }
 
     public String getSentence() {
-        String url = parsingUrlService.getGeneraterUrl();
-        String html = requestService.getEntity(url);
-        if (html == null) {
-            throw new RandomSentenceServiceException("Не удалось получить HTML от " + url);
+        String url = buildingUrlService.getGeneraterUrl();
+        SentenceResponse response = requestService.getSentenceResponse(url);
+        if (response == null) {
+            throw new RandomSentenceServiceException("Не удалось получить ответ от " + url);
         }
-        String sentence = parsingHtmlService.parsingHtmlFromGenerationEnglishSentence(html);
+        String sentence = response.getContent();
         if (sentence == null || sentence.trim().isEmpty() || sentence.equals("the element does not exist")) {
             throw new RandomSentenceNotFoundException("Предложение не найдено на странице.");
         }
