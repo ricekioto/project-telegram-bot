@@ -46,18 +46,6 @@ public class Bot extends AbilityBot {
                 .build();
     }
 
-    public Ability resetCommand() {
-        return Ability.builder()
-                .name("reset")
-                .locality(Locality.ALL)
-                .privacy(PUBLIC)
-                .action(ctx -> {
-                    long chatId = ctx.chatId();
-                    db.getMap(CHAT_STATES).remove(chatId);
-                })
-                .build();
-    }
-
     public Reply replyToButtons() {
         BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandlerService.replyToButtons(getChatId(upd), upd.getMessage());
         return Reply.of(action, Flag.TEXT, upd -> responseHandlerService.userIsActive(getChatId(upd)));
