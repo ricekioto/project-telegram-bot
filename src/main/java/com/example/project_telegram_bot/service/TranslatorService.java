@@ -5,18 +5,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class TranslatorService {
     private final ParsingHtmlService parsingHtmlService;
-    private final ParsingUrlService parsingUrlService;
+    private final BuildingUrlService buildingUrlService;
     private final RequestService requestService;
 
-    public TranslatorService(ParsingHtmlService parsingHtmlService, ParsingUrlService parsingUrlService, RequestService requestService) {
+    public TranslatorService(ParsingHtmlService parsingHtmlService, BuildingUrlService buildingUrlService, RequestService requestService) {
         this.parsingHtmlService = parsingHtmlService;
-        this.parsingUrlService = parsingUrlService;
+        this.buildingUrlService = buildingUrlService;
         this.requestService = requestService;
     }
 
     public String getTranslatedText(String text) {
-        String validateUrl = parsingUrlService.getTranslationUrl(text);
-        String html = requestService.getEntity(validateUrl);
+        String validateUrl = buildingUrlService.getTranslationUrl(text);
+        String html = requestService.getHtml(validateUrl);
         String translatedText = parsingHtmlService.parsingHtmlFromTranslator(html);
         return translatedText;
     }
