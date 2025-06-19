@@ -112,8 +112,7 @@ public class ResponseHandlerService {
 
     public void getSentence(long chatId) {
         sendMessage.setChatId(chatId);
-//        String messageText = requestService.getEntity(urlRandomSentenceController);
-        String messageText = englishRandomService.getSentence();
+        String messageText = requestService.get(URL_RANDOM_SENTENCE_CONTROLLER);
 //        String translatedText = translatorService.getTranslatedText(messageText);
 //        translatedText = escapeMarkdownV2(translatedText);
 //        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
@@ -134,10 +133,6 @@ public class ResponseHandlerService {
         every10Seconds.remove(chatId);
         every30Minutes.remove(chatId);
         every60Minutes.remove(chatId);
-        chatStates.clear();
-        every10Seconds.clear();
-        every30Minutes.clear();
-        every60Minutes.clear();
         sendMessage.setText(CHAT_CLOSE);
         sendMessage.setReplyMarkup(keyboardFactoryService.toStart());
         sender.execute(sendMessage);
