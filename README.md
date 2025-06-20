@@ -13,4 +13,8 @@
 * Maven
 * Git
 
+### Микросервисы
+
+* https://github.com/ricekioto/sentence-generator-service - сервис генерации предложений.
+
 #### В планах добавить еще Kafka, Rabit.
