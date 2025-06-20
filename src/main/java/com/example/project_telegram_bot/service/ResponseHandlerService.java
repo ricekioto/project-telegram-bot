@@ -28,7 +28,6 @@ public class ResponseHandlerService {
     private List<Long> every10Seconds;
     private List<Long> every30Minutes;
     private List<Long> every60Minutes;
-    private SendMessage sendMessage;
 
 
     public ResponseHandlerService(SilentSender silentSender,
@@ -37,14 +36,12 @@ public class ResponseHandlerService {
                                   UserTgRepository userTgRepository,
                                   EnglishRandomService englishRandomService,
                                   TranslatorService translatorService,
-                                  RequestService requestService,
-                                  SendMessage sendMessage) {
+                                  RequestService requestService) {
         this.keyboardFactoryService = keyboardFactoryService;
         this.userTgRepository = userTgRepository;
         this.englishRandomService = englishRandomService;
         this.translatorService = translatorService;
         this.requestService = requestService;
-        this.sendMessage = sendMessage;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
@@ -53,10 +50,11 @@ public class ResponseHandlerService {
     }
 
     public void toStart(long chatId) {
+        SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
         sendMessage.setText("Нажми на кнопку \"Получить\" для получения " +
                 "сгенерированного предложения на английском языке.\n" +
-                "Или можешь выбрать время, которое будет отправляться с выбранным периодом времени.");
+                "Или можешь выбрать время c которым будет отправляться сообщение.");
         sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
         chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
@@ -64,10 +62,11 @@ public class ResponseHandlerService {
     }
 
     public void replyToButtons(long chatId, Message message) {
+        SendMessage sendMessage = new SendMessage();
         switch (message.getText()) {
             case "Остановить бота" -> stopChat(chatId);
             case "Получить" -> getSentence(chatId);
-            case "10 секунд" -> {
+            case "5 минут" -> {
                 if (!every10Seconds.contains(chatId)) {
                     every10Seconds.add(chatId);
                 }
@@ -111,6 +110,8 @@ public class ResponseHandlerService {
     }
 
     public void getSentence(long chatId) {
+        SendMessage sendMessage = new SendMessage();
+
         sendMessage.setChatId(chatId);
         String messageText = requestService.get(URL_RANDOM_SENTENCE_CONTROLLER);
 //        String translatedText = translatorService.getTranslatedText(messageText);
@@ -122,12 +123,17 @@ public class ResponseHandlerService {
     }
 
     private void unexpectedMessage(long chatId) {
+        SendMessage sendMessage = new SendMessage();
+
         sendMessage.setChatId(chatId);
         sendMessage.setText(ANOTHER_ANSWER);
+        sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
         sender.execute(sendMessage);
     }
 
     public void stopChat(long chatId) {
+        SendMessage sendMessage = new SendMessage();
+
         sendMessage.setChatId(chatId);
         chatStates.remove(chatId);
         every10Seconds.remove(chatId);
@@ -142,24 +148,8 @@ public class ResponseHandlerService {
         return chatStates.containsKey(chatId);
     }
 
-    public KeyboardFactoryService getKeyboardFactory() {
-        return keyboardFactoryService;
-    }
-
-    public UserTgRepository getUserTgRepository() {
-        return userTgRepository;
-    }
-
-    public EnglishRandomService getEnglishService() {
-        return englishRandomService;
-    }
-
     public SilentSender getSender() {
         return sender;
-    }
-
-    public Map<Long, Object> getChatStates() {
-        return chatStates;
     }
 
     public List<Long> getEvery10Seconds() {
@@ -174,7 +164,11 @@ public class ResponseHandlerService {
         return every60Minutes;
     }
 
-    public SendMessage getSendMessage() {
-        return sendMessage;
+    public RequestService getRequestService() {
+        return requestService;
+    }
+
+    public String getURL_RANDOM_SENTENCE_CONTROLLER() {
+        return URL_RANDOM_SENTENCE_CONTROLLER;
     }
 }
