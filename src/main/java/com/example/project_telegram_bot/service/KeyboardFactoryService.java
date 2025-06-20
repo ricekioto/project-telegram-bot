@@ -6,32 +6,50 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class KeyboardFactoryService {
+    private final ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
     public ReplyKeyboard toStart() {
+        List<KeyboardRow> keyboardStart = new ArrayList<>();
+
         KeyboardRow row = new KeyboardRow();
         row.add("/start");
-        return new ReplyKeyboardMarkup(List.of(row));
+        keyboardStart.add(row);
+
+        markup.setKeyboard(keyboardStart);
+        markup.setResizeKeyboard(true);
+        markup.setOneTimeKeyboard(true);
+        return markup;
     }
 
     public ReplyKeyboard getSentenceAndStop() {
-        KeyboardRow row = new KeyboardRow();
-        row.add("Получить");
-        row.add("10 секунд");
-        row.add("30 минут");
-        row.add("60 минут");
-        row.add("Не отправлять по расписанию");
-        row.add("Остановить бота");
-        return new ReplyKeyboardMarkup(List.of(row));
-    }
+        List<KeyboardRow> keyboardMenu = new ArrayList<>();
+        // Первая строка с кнопками
+        KeyboardRow row1 = new KeyboardRow();
+        row1.add("Получить");
+        row1.add("5 минут");
+        keyboardMenu.add(row1);
 
-    public ReplyKeyboard interlvalTime() {
-        KeyboardRow row = new KeyboardRow();
-        row.add("30");
-        row.add("60");
-        return new ReplyKeyboardMarkup(List.of(row));
+        // Вторая строка с кнопками
+        KeyboardRow row2 = new KeyboardRow();
+        row2.add("30 минут");
+        row2.add("60 минут");
+        keyboardMenu.add(row2);
+
+        // Третья строка с кнопками
+        KeyboardRow row3 = new KeyboardRow();
+        row3.add("Не отправлять по расписанию");
+        row3.add("Остановить бота");
+        keyboardMenu.add(row3);
+
+        markup.setKeyboard(keyboardMenu);
+        markup.setResizeKeyboard(true); // Автоматическое изменение размера клавиатуры
+        markup.setOneTimeKeyboard(false); // Клавиатура будет оставаться после использования
+
+        return markup;
     }
 
     public ReplyKeyboard closeKeyboard() {
