@@ -11,13 +11,13 @@ public class EnglishRandomService {
     @Value("${url.english.generate-website}")
     private String url;
     private final RequestService requestService;
-    private final ParsingHtmlService parsingHtmlService;
+    private final ParsingService parsingService;
     private final BuildingUrlService buildingUrlService;
 
-    public EnglishRandomService(RequestService requestService, ParsingHtmlService parsingHtmlService, BuildingUrlService buildingUrlService) {
+    public EnglishRandomService(RequestService requestService, ParsingService parsingService, BuildingUrlService buildingUrlService) {
         this.requestService = requestService;
         this.buildingUrlService = buildingUrlService;
-        this.parsingHtmlService = parsingHtmlService;
+        this.parsingService = parsingService;
     }
 
     public String getSentence() {
