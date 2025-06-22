@@ -26,13 +26,12 @@ public class Bot extends AbilityBot {
     private final UserTgRepository userTgRepository;
 
     public Bot(Environment env, UserTgRepository userTgRepository,
-               KeyboardFactoryService keyboardFactoryService, EnglishRandomService englishRandomService,
-               TranslatorService translatorService, RequestService requestService) {
+               KeyboardFactoryService keyboardFactoryService, RequestService requestService,
+               BuildingUrlService buildingUrlService) {
         super(env.getProperty("bot.token"), "bot.name");
         this.responseHandlerService = new ResponseHandlerService(silent, db,
                 keyboardFactoryService, userTgRepository,
-                englishRandomService, translatorService,
-                requestService);
+                requestService, buildingUrlService);
         this.userTgRepository = userTgRepository;
     }
 
