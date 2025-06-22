@@ -27,27 +27,25 @@ public class KeyboardFactoryService {
 
     public ReplyKeyboard getSentenceAndStop() {
         List<KeyboardRow> keyboardMenu = new ArrayList<>();
-        // Первая строка с кнопками
+
         KeyboardRow row1 = new KeyboardRow();
         row1.add("Получить");
-        row1.add("5 минут");
+        row1.add("15 минут");
         keyboardMenu.add(row1);
 
-        // Вторая строка с кнопками
         KeyboardRow row2 = new KeyboardRow();
         row2.add("30 минут");
         row2.add("60 минут");
         keyboardMenu.add(row2);
 
-        // Третья строка с кнопками
         KeyboardRow row3 = new KeyboardRow();
         row3.add("Не отправлять по расписанию");
         row3.add("Остановить бота");
         keyboardMenu.add(row3);
 
         markup.setKeyboard(keyboardMenu);
-        markup.setResizeKeyboard(true); // Автоматическое изменение размера клавиатуры
-        markup.setOneTimeKeyboard(false); // Клавиатура будет оставаться после использования
+        markup.setResizeKeyboard(true);
+        markup.setOneTimeKeyboard(false);
 
         return markup;
     }
