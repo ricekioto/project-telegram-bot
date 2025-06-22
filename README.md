@@ -16,5 +16,6 @@
 ### Микросервисы
 
 * https://github.com/ricekioto/sentence-generator-service - сервис генерации предложений.
+* https://github.com/ricekioto/translator-service - сервис перевода.
 
 #### В планах добавить еще Kafka, Rabit.
