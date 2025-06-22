@@ -13,15 +13,13 @@ import java.util.Map;
 import static com.example.project_telegram_bot.entity.Constants.ANOTHER_ANSWER;
 import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
 import static com.example.project_telegram_bot.enums.UserState.MENU;
+import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeMarkdownV2;
 
 
 public class ResponseHandlerService {
-    private final String URL_RANDOM_SENTENCE_CONTROLLER = "http://localhost:8081/api/random/sentence";
-
+    private BuildingUrlService buildingUrlService;
     private KeyboardFactoryService keyboardFactoryService;
     private UserTgRepository userTgRepository;
-    private EnglishRandomService englishRandomService;
-    private TranslatorService translatorService;
     private RequestService requestService;
     private SilentSender sender;
     private Map<Long, Object> chatStates;
@@ -34,14 +32,11 @@ public class ResponseHandlerService {
                                   DBContext db,
                                   KeyboardFactoryService keyboardFactoryService,
                                   UserTgRepository userTgRepository,
-                                  EnglishRandomService englishRandomService,
-                                  TranslatorService translatorService,
-                                  RequestService requestService) {
+                                  RequestService requestService, BuildingUrlService buildingUrlService) {
         this.keyboardFactoryService = keyboardFactoryService;
         this.userTgRepository = userTgRepository;
-        this.englishRandomService = englishRandomService;
-        this.translatorService = translatorService;
         this.requestService = requestService;
+        this.buildingUrlService = buildingUrlService;
         sender = silentSender;
         chatStates = db.getMap(Constants.CHAT_STATES);
         every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
@@ -66,7 +61,7 @@ public class ResponseHandlerService {
         switch (message.getText()) {
             case "Остановить бота" -> stopChat(chatId);
             case "Получить" -> getSentence(chatId);
-            case "5 минут" -> {
+            case "15 минут" -> {
                 if (!every10Seconds.contains(chatId)) {
                     every10Seconds.add(chatId);
                 }
@@ -111,14 +106,18 @@ public class ResponseHandlerService {
 
     public void getSentence(long chatId) {
         SendMessage sendMessage = new SendMessage();
-
         sendMessage.setChatId(chatId);
-        String messageText = requestService.get(URL_RANDOM_SENTENCE_CONTROLLER);
-//        String translatedText = translatorService.getTranslatedText(messageText);
-//        translatedText = escapeMarkdownV2(translatedText);
-//        String returnText = messageText + "\nПеревод.\n*|| example:" + translatedText + " ||*";
-        sendMessage.setText(messageText);
-//        sendMessage.setParseMode("MARKDOWNV2");
+
+        String randomEnglishControllerUrl = buildingUrlService.getRandomEnglishControllerUrl();
+        String messageText = requestService.get(randomEnglishControllerUrl);
+        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
+        String translatedText = requestService.get(translationControllerUrl);
+
+        translatedText = escapeMarkdownV2(translatedText);
+        messageText = escapeMarkdownV2(messageText);
+        String returnText = messageText + "\n\n||" + translatedText + "||";
+        sendMessage.setText(returnText);
+        sendMessage.setParseMode("MARKDOWNV2");
         sender.execute(sendMessage);
     }
 
@@ -168,7 +167,4 @@ public class ResponseHandlerService {
         return requestService;
     }
 
-    public String getURL_RANDOM_SENTENCE_CONTROLLER() {
-        return URL_RANDOM_SENTENCE_CONTROLLER;
-    }
 }
