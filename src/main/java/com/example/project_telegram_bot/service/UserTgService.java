@@ -28,4 +28,19 @@ public class UserTgService {
         }
         return userTgRepository.findUserById(id);
     }
+
+    @Transactional
+    boolean existsById(Long id) throws UserTgException {
+        return userTgRepository.existsById(id);
+    }
+
+    @Transactional
+    public UserTg save(UserTg userTg) throws UserTgException {
+        return userTgRepository.save(userTg);
+    }
+
+    @Transactional
+    public void deleteById(Long id) throws UserTgException {
+        userTgRepository.deleteById(id);
+    }
 }
