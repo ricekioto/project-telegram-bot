@@ -23,7 +23,6 @@ public class UserTgService {
     @Transactional
     public UserTg getById(Long id) throws UserTgException {
         if (userTgRepository.existsById(id) && Objects.isNull(id)) {
-            logger.warn("id равен null или сущности с таким id не существует");
             throw new UserTgException("Id is null");
         }
         return userTgRepository.findUserById(id);
