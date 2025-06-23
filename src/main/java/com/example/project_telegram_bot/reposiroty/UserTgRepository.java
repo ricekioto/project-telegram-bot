@@ -11,4 +11,5 @@ public interface UserTgRepository extends JpaRepository<UserTg, Long> {
 
     boolean existsByChatId(Long chatId);
 
+
 }
