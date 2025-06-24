@@ -29,7 +29,7 @@ public class ScheduleService {
     private List<Long> every60Minutes;
 
     public ScheduleService(Bot bot, RequestService requestService, BuildingUrlService buildingUrlService) {
-        this.responseHandlerService = bot.getResponseHandler();
+        this.responseHandlerService = bot.getResponseHandlerService();
         this.sender = responseHandlerService.getSender();
         this.requestService = requestService;
         this.buildingUrlService = buildingUrlService;
