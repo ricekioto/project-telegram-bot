@@ -1,10 +1,7 @@
 package com.example.project_telegram_bot.bot;
 
-import com.example.project_telegram_bot.reposiroty.UserTgRepository;
-import com.example.project_telegram_bot.service.BuildingUrlService;
-import com.example.project_telegram_bot.service.KeyboardFactoryService;
-import com.example.project_telegram_bot.service.RequestService;
-import com.example.project_telegram_bot.service.ResponseHandlerService;
+import com.example.project_telegram_bot.service.*;
+import lombok.Getter;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -20,19 +17,18 @@ import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
+@Getter
 @Component
 public class Bot extends AbilityBot {
     private final ResponseHandlerService responseHandlerService;
-    private final UserTgRepository userTgRepository;
 
-    public Bot(Environment env, UserTgRepository userTgRepository,
+    public Bot(Environment env, UserTgService userTgService,
                KeyboardFactoryService keyboardFactoryService, RequestService requestService,
                BuildingUrlService buildingUrlService) {
         super(env.getProperty("bot.token"), "bot.name");
         this.responseHandlerService = new ResponseHandlerService(silent, db,
-                keyboardFactoryService, userTgRepository,
+                keyboardFactoryService, userTgService,
                 requestService, buildingUrlService);
-        this.userTgRepository = userTgRepository;
     }
 
     public Ability startBot() {
@@ -55,11 +51,4 @@ public class Bot extends AbilityBot {
         return 1L;
     }
 
-    public ResponseHandlerService getResponseHandler() {
-        return responseHandlerService;
-    }
-
-    public UserTgRepository getUserTgRepository() {
-        return userTgRepository;
-    }
 }
