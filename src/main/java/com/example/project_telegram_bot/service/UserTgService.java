@@ -3,34 +3,25 @@ package com.example.project_telegram_bot.service;
 import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.error.UserTgException;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 @Service
+@RequiredArgsConstructor
 public class UserTgService {
-    private static final Logger logger = LoggerFactory.getLogger(UserTgException.class);
+    private final UserTgRepository userTgRepository;
 
-    private UserTgRepository userTgRepository;
-
-    public UserTgService(UserTgRepository userTgRepository) {
-        this.userTgRepository = userTgRepository;
+    @Transactional
+    public boolean existsByChatId(Long chatId) throws UserTgException {
+        return userTgRepository.existsByChatId(chatId);
     }
 
     @Transactional
-    public UserTg getById(Long id) throws UserTgException {
-        if (userTgRepository.existsById(id) && Objects.isNull(id)) {
-            throw new UserTgException("Id is null");
-        }
-        return userTgRepository.findUserById(id);
-    }
-
-    @Transactional
-    boolean existsById(Long id) throws UserTgException {
-        return userTgRepository.existsById(id);
+    public UserTg findByChatId(Long chatId) throws UserTgException {
+        return userTgRepository.findByChatId(chatId);
     }
 
     @Transactional
@@ -38,8 +29,9 @@ public class UserTgService {
         return userTgRepository.save(userTg);
     }
 
+
     @Transactional
-    public void deleteById(Long id) throws UserTgException {
-        userTgRepository.deleteById(id);
+    public void deleteByChatId(Long chatId) throws UserTgException {
+        userTgRepository.deleteByChatId(chatId);
     }
 }
