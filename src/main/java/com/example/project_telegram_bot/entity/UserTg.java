@@ -6,8 +6,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class UserTg {
     @Id
@@ -16,6 +16,4 @@ public class UserTg {
 
     @Column(nullable = false)
     private Long chatId;
-
-
 }
