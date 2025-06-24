@@ -1,7 +1,8 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.Constants;
-import com.example.project_telegram_bot.reposiroty.UserTgRepository;
+import com.example.project_telegram_bot.entity.UserTg;
+import lombok.Getter;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -10,16 +11,16 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.project_telegram_bot.entity.Constants.ANOTHER_ANSWER;
-import static com.example.project_telegram_bot.entity.Constants.CHAT_CLOSE;
+import static com.example.project_telegram_bot.entity.Constants.*;
 import static com.example.project_telegram_bot.enums.UserState.MENU;
 import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeMarkdownV2;
 
 
+@Getter
 public class ResponseHandlerService {
     private BuildingUrlService buildingUrlService;
     private KeyboardFactoryService keyboardFactoryService;
-    private UserTgRepository userTgRepository;
+    private UserTgService userTgService;
     private RequestService requestService;
     private SilentSender sender;
     private Map<Long, Object> chatStates;
@@ -31,10 +32,10 @@ public class ResponseHandlerService {
     public ResponseHandlerService(SilentSender silentSender,
                                   DBContext db,
                                   KeyboardFactoryService keyboardFactoryService,
-                                  UserTgRepository userTgRepository,
+                                  UserTgService userTgService,
                                   RequestService requestService, BuildingUrlService buildingUrlService) {
         this.keyboardFactoryService = keyboardFactoryService;
-        this.userTgRepository = userTgRepository;
+        this.userTgService = userTgService;
         this.requestService = requestService;
         this.buildingUrlService = buildingUrlService;
         sender = silentSender;
@@ -45,11 +46,14 @@ public class ResponseHandlerService {
     }
 
     public void toStart(long chatId) {
+        if (!userTgService.existsByChatId(chatId)) {
+            userTgService.save(UserTg.builder()
+                    .chatId(chatId)
+                    .build());
+        }
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        sendMessage.setText("Нажми на кнопку \"Получить\" для получения " +
-                "сгенерированного предложения на английском языке.\n" +
-                "Или можешь выбрать время c которым будет отправляться сообщение.");
+        sendMessage.setText(STARTED_MESSAGE);
         sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
         chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
@@ -108,7 +112,7 @@ public class ResponseHandlerService {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
 
-        String randomEnglishControllerUrl = buildingUrlService.getRandomEnglishControllerUrl();
+        String randomEnglishControllerUrl = buildingUrlService.getGeneratorControllerUrl();
         String messageText = requestService.get(randomEnglishControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
@@ -131,8 +135,10 @@ public class ResponseHandlerService {
     }
 
     public void stopChat(long chatId) {
+        if (userTgService.existsByChatId(chatId)) {
+            userTgService.deleteByChatId(chatId);
+        }
         SendMessage sendMessage = new SendMessage();
-
         sendMessage.setChatId(chatId);
         chatStates.remove(chatId);
         every10Seconds.remove(chatId);
@@ -146,25 +152,4 @@ public class ResponseHandlerService {
     public boolean userIsActive(Long chatId) {
         return chatStates.containsKey(chatId);
     }
-
-    public SilentSender getSender() {
-        return sender;
-    }
-
-    public List<Long> getEvery10Seconds() {
-        return every10Seconds;
-    }
-
-    public List<Long> getEvery30Minutes() {
-        return every30Minutes;
-    }
-
-    public List<Long> getEvery60Minutes() {
-        return every60Minutes;
-    }
-
-    public RequestService getRequestService() {
-        return requestService;
-    }
-
 }
