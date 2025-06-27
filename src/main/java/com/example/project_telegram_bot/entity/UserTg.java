@@ -16,4 +16,5 @@ public class UserTg {
 
     @Column(nullable = false)
     private Long chatId;
+
 }
