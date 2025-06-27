@@ -50,5 +50,4 @@ public class Bot extends AbilityBot {
     public long creatorId() {
         return 1L;
     }
-
 }
