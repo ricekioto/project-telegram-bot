@@ -54,5 +54,4 @@ public class KeyboardFactoryService {
     public ReplyKeyboard closeKeyboard() {
         return new ReplyKeyboardRemove(true);
     }
-
 }
