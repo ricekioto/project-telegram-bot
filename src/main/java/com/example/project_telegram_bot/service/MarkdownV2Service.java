@@ -25,4 +25,5 @@ public class MarkdownV2Service {
                 .replace("!", "\\!");
         return escapedText;
     }
+
 }
