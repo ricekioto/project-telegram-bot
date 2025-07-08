@@ -19,7 +19,6 @@ import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeM
 public class ScheduleService {
     @Value("${url.random-controller}")
     private String generatorControllerUrl;
-
     private SilentSender sender;
     private ResponseHandlerService responseHandlerService;
     private RequestService requestService;
