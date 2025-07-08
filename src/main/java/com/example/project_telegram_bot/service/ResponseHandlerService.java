@@ -28,7 +28,6 @@ public class ResponseHandlerService {
     private List<Long> every30Minutes;
     private List<Long> every60Minutes;
 
-
     public ResponseHandlerService(SilentSender silentSender,
                                   DBContext db,
                                   KeyboardFactoryService keyboardFactoryService,
