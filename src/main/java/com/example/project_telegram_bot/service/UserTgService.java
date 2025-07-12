@@ -27,7 +27,6 @@ public class UserTgService {
         return userTgRepository.save(userTg);
     }
 
-
     @Transactional
     public void deleteByChatId(Long chatId) throws UserTgException {
         userTgRepository.deleteByChatId(chatId);
