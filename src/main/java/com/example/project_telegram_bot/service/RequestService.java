@@ -19,4 +19,5 @@ public class RequestService {
             throw new RequestServiceException("Не удалось получить HTML. Код состояния: " + responseEntity.getStatusCode());
         }
     }
+
 }
