@@ -37,6 +37,7 @@ public class ScheduleService {
         every60Minutes = responseHandlerService.getEvery60Minutes();
     }
 
+
     @Async
     @Scheduled(cron = "0 */15 * * * *")
     public void interlvalTime10Second() throws ScheduleServiceException {
