@@ -12,5 +12,4 @@ public interface UserTgRepository extends JpaRepository<UserTg, Long> {
     UserTg findByChatId(Long chatId);
 
     void deleteByChatId(Long chatId);
-
 }
