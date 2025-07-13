@@ -103,7 +103,6 @@ public class ResponseHandlerService {
             }
             default -> unexpectedMessage(chatId);
         }
-
     }
 
     public void getSentence(long chatId) {
