@@ -32,3 +32,4 @@ public class UserTgService {
         userTgRepository.deleteByChatId(chatId);
     }
 }
+
