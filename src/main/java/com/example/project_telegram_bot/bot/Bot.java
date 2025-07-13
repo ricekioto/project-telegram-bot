@@ -41,4 +41,3 @@ public class Bot extends AbilityBot {
         return 1L;
     }
 }
-
