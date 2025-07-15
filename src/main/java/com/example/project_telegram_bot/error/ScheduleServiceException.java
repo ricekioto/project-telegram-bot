@@ -10,3 +10,4 @@ public class ScheduleServiceException extends RuntimeException {
         super(message, cause);
     }
 }
+
