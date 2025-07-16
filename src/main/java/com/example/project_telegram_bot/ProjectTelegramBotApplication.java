@@ -22,5 +22,4 @@ public class ProjectTelegramBotApplication {
             throw new RuntimeException(e);
         }
     }
-
 }
