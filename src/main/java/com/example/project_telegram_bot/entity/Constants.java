@@ -13,3 +13,4 @@ public class Constants {
     public static final String CHATS_EVERY_60_MINUTES = "every60Minutes";
 }
 
+
