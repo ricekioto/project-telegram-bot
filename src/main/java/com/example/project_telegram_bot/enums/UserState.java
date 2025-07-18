@@ -8,3 +8,4 @@ public enum UserState {
     INTERVAL60,
     SENTENCE,
 }
+
