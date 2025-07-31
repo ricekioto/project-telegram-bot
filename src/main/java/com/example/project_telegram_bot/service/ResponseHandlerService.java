@@ -1,8 +1,10 @@
 package com.example.project_telegram_bot.service;
 
+import com.example.project_telegram_bot.bot.Bot;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserTg;
 import lombok.Getter;
+import org.springframework.stereotype.Service;
 import org.telegram.abilitybots.api.db.DBContext;
 import org.telegram.abilitybots.api.sender.SilentSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -17,19 +19,15 @@ import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeM
 
 
 @Getter
+@Service
 public class ResponseHandlerService {
     private BuildingUrlService buildingUrlService;
     private KeyboardFactoryService keyboardFactoryService;
     private UserTgService userTgService;
     private RequestService requestService;
     private SilentSender sender;
-    private Map<Long, Object> chatStates;
-    private List<Long> every10Seconds;
-    private List<Long> every30Minutes;
-    private List<Long> every60Minutes;
 
-    public ResponseHandlerService(SilentSender silentSender,
-                                  DBContext db,
+    public ResponseHandlerService(Bot bot,
                                   KeyboardFactoryService keyboardFactoryService,
                                   UserTgService userTgService,
                                   RequestService requestService, BuildingUrlService buildingUrlService) {
@@ -37,11 +35,7 @@ public class ResponseHandlerService {
         this.userTgService = userTgService;
         this.requestService = requestService;
         this.buildingUrlService = buildingUrlService;
-        sender = silentSender;
-        chatStates = db.getMap(Constants.CHAT_STATES);
-        every10Seconds = db.getList(Constants.CHATS_EVERY_10_SECONDS);
-        every30Minutes = db.getList(Constants.CHATS_EVERY_30_MINUTES);
-        every60Minutes = db.getList(Constants.CHATS_EVERY_60_MINUTES);
+        sender = bot.silent();
     }
 
     public void toStart(long chatId) {
@@ -54,7 +48,6 @@ public class ResponseHandlerService {
         sendMessage.setChatId(chatId);
         sendMessage.setText(STARTED_MESSAGE);
         sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
-        chatStates.put(chatId, MENU);
         sender.execute(sendMessage);
     }
 
@@ -64,39 +57,25 @@ public class ResponseHandlerService {
             case "Остановить бота" -> stopChat(chatId);
             case "Получить" -> getSentence(chatId);
             case "15 минут" -> {
-                if (!every10Seconds.contains(chatId)) {
-                    every10Seconds.add(chatId);
-                }
-                every30Minutes.remove(chatId);
-                every60Minutes.remove(chatId);
+
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "30 минут" -> {
-                if (!every30Minutes.contains(chatId)) {
-                    every30Minutes.add(chatId);
-                }
-                every60Minutes.remove(chatId);
-                every10Seconds.remove(chatId);
+
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "60 минут" -> {
-                if (!every60Minutes.contains(chatId)) {
-                    every60Minutes.add(chatId);
-                }
-                every30Minutes.remove(chatId);
-                every10Seconds.remove(chatId);
+
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "Не отправлять по расписанию" -> {
-                every10Seconds.remove(chatId);
-                every30Minutes.remove(chatId);
-                every60Minutes.remove(chatId);
+
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
@@ -137,17 +116,13 @@ public class ResponseHandlerService {
         }
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
-        chatStates.remove(chatId);
-        every10Seconds.remove(chatId);
-        every30Minutes.remove(chatId);
-        every60Minutes.remove(chatId);
         sendMessage.setText(CHAT_CLOSE);
         sendMessage.setReplyMarkup(keyboardFactoryService.toStart());
         sender.execute(sendMessage);
     }
 
     public boolean userIsActive(Long chatId) {
-        return chatStates.containsKey(chatId);
+        return userTgService.existsByChatId(chatId);
     }
 }
 
