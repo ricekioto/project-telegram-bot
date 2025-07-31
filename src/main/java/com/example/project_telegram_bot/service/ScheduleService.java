@@ -23,18 +23,12 @@ public class ScheduleService {
     private ResponseHandlerService responseHandlerService;
     private RequestService requestService;
     private BuildingUrlService buildingUrlService;
-    private List<Long> every10Seconds;
-    private List<Long> every30Minutes;
-    private List<Long> every60Minutes;
 
     public ScheduleService(Bot bot, RequestService requestService, BuildingUrlService buildingUrlService) {
         this.responseHandlerService = bot.getResponseHandlerService();
         this.sender = responseHandlerService.getSender();
         this.requestService = requestService;
         this.buildingUrlService = buildingUrlService;
-        every10Seconds = responseHandlerService.getEvery10Seconds();
-        every30Minutes = responseHandlerService.getEvery30Minutes();
-        every60Minutes = responseHandlerService.getEvery60Minutes();
     }
 
     @Async
@@ -42,9 +36,9 @@ public class ScheduleService {
     public void interlvalTime10Second() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
 
-        if (every10Seconds.isEmpty()) {
-            return;
-        }
+//        if (every10Seconds.isEmpty()) {
+//            return;
+//        }
         String messageText = requestService.get(generatorControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
@@ -52,12 +46,12 @@ public class ScheduleService {
         translatedText = escapeMarkdownV2(translatedText);
         messageText = escapeMarkdownV2(messageText);
         String returnText = messageText + "\n\n||" + translatedText + "||";
-        for (Long instance : every10Seconds) {
-            sendMessage.setChatId(instance);
-            sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
-            sender.execute(sendMessage);
-        }
+//        for (Long instance : every10Seconds) {
+//            sendMessage.setChatId(instance);
+//            sendMessage.setText(returnText);
+//            sendMessage.setParseMode("MARKDOWNV2");
+//            sender.execute(sendMessage);
+//        }
     }
 
     @Async
@@ -65,22 +59,22 @@ public class ScheduleService {
     public void interlvalTime30Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
 
-        if (every30Minutes.isEmpty()) {
-            return;
-        }
-        String messageText = requestService.get(generatorControllerUrl);
-        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
-        String translatedText = requestService.get(translationControllerUrl);
-
-        translatedText = escapeMarkdownV2(translatedText);
-        messageText = escapeMarkdownV2(messageText);
-        String returnText = messageText + "\n\n||" + translatedText + "||";
-        for (Long instance : every30Minutes) {
-            sendMessage.setChatId(instance);
-            sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
-            sender.execute(sendMessage);
-        }
+//        if (every30Minutes.isEmpty()) {
+//            return;
+//        }
+//        String messageText = requestService.get(generatorControllerUrl);
+//        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
+//        String translatedText = requestService.get(translationControllerUrl);
+//
+//        translatedText = escapeMarkdownV2(translatedText);
+//        messageText = escapeMarkdownV2(messageText);
+//        String returnText = messageText + "\n\n||" + translatedText + "||";
+//        for (Long instance : every30Minutes) {
+//            sendMessage.setChatId(instance);
+//            sendMessage.setText(returnText);
+//            sendMessage.setParseMode("MARKDOWNV2");
+//            sender.execute(sendMessage);
+//        }
     }
 
     @Async
@@ -88,9 +82,9 @@ public class ScheduleService {
     public void interlvalTime60Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
 
-        if (every60Minutes.isEmpty()) {
-            return;
-        }
+//        if (every60Minutes.isEmpty()) {
+//            return;
+//        }
         String messageText = requestService.get(generatorControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
@@ -98,12 +92,12 @@ public class ScheduleService {
         translatedText = escapeMarkdownV2(translatedText);
         messageText = escapeMarkdownV2(messageText);
         String returnText = messageText + "\n\n||" + translatedText + "||";
-        for (Long instance : every60Minutes) {
-            sendMessage.setChatId(instance);
-            sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
-            sender.execute(sendMessage);
-        }
+//        for (Long instance : every60Minutes) {
+//            sendMessage.setChatId(instance);
+//            sendMessage.setText(returnText);
+//            sendMessage.setParseMode("MARKDOWNV2");
+//            sender.execute(sendMessage);
+//        }
     }
 }
 
