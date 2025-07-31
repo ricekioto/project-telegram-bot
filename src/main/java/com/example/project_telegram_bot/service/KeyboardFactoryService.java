@@ -10,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class KeyboardFactoryService {
+public class
+KeyboardFactoryService {
     private final ReplyKeyboardMarkup markup = new ReplyKeyboardMarkup();
 
     public ReplyKeyboard toStart() {
@@ -55,6 +56,7 @@ public class KeyboardFactoryService {
         return new ReplyKeyboardRemove(true);
     }
 }
+
 
 
 
