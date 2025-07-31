@@ -22,13 +22,17 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 public class Bot extends AbilityBot {
     private final ResponseHandlerService responseHandlerService;
 
-    public Bot(Environment env, UserTgService userTgService, KeyboardFactoryService keyboardFactoryService, RequestService requestService, BuildingUrlService buildingUrlService) {
+    public Bot(Environment env, ResponseHandlerService responseHandlerService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandlerService = new ResponseHandlerService(silent, db, keyboardFactoryService, userTgService, requestService, buildingUrlService);
+        this.responseHandlerService = responseHandlerService;
     }
 
     public Ability startBot() {
-        return Ability.builder().name("start").locality(ALL).privacy(PUBLIC).action(ctx -> responseHandlerService.toStart(ctx.chatId())).build();
+        return Ability.builder()
+                .name("start")
+                .locality(ALL)
+                .privacy(PUBLIC)
+                .action(ctx -> responseHandlerService.toStart(ctx.chatId())).build();
     }
 
     public Reply replyToButtons() {
