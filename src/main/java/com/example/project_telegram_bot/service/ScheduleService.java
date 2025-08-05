@@ -1,8 +1,10 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.bot.Bot;
+import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.error.ScheduleServiceException;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,29 +18,23 @@ import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeM
 
 @Getter
 @Service
+@RequiredArgsConstructor
 public class ScheduleService {
     @Value("${url.random-controller}")
     private String generatorControllerUrl;
-    private SilentSender sender;
-    private ResponseHandlerService responseHandlerService;
-    private RequestService requestService;
-    private BuildingUrlService buildingUrlService;
-
-    public ScheduleService(Bot bot, RequestService requestService, BuildingUrlService buildingUrlService) {
-        this.responseHandlerService = bot.getResponseHandlerService();
-        this.sender = responseHandlerService.getSender();
-        this.requestService = requestService;
-        this.buildingUrlService = buildingUrlService;
-    }
+    private final SilentSender sender;
+    private final RequestService requestService;
+    private final BuildingUrlService buildingUrlService;
+    private final UserTgService userTgService;
 
     @Async
     @Scheduled(cron = "0 */15 * * * *")
     public void interlvalTime10Second() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
-
-//        if (every10Seconds.isEmpty()) {
-//            return;
-//        }
+        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 10);
+        if (listUserTg.isEmpty()) {
+            return;
+        }
         String messageText = requestService.get(generatorControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
@@ -46,45 +42,22 @@ public class ScheduleService {
         translatedText = escapeMarkdownV2(translatedText);
         messageText = escapeMarkdownV2(messageText);
         String returnText = messageText + "\n\n||" + translatedText + "||";
-//        for (Long instance : every10Seconds) {
-//            sendMessage.setChatId(instance);
-//            sendMessage.setText(returnText);
-//            sendMessage.setParseMode("MARKDOWNV2");
-//            sender.execute(sendMessage);
-//        }
+        for (UserTg instance : listUserTg) {
+            sendMessage.setChatId(instance.getChatId());
+            sendMessage.setText(returnText);
+            sendMessage.setParseMode("MARKDOWNV2");
+            sender.execute(sendMessage);
+        }
     }
 
     @Async
     @Scheduled(cron = "0 */30 * * * *")
     public void interlvalTime30Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
-
-//        if (every30Minutes.isEmpty()) {
-//            return;
-//        }
-//        String messageText = requestService.get(generatorControllerUrl);
-//        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
-//        String translatedText = requestService.get(translationControllerUrl);
-//
-//        translatedText = escapeMarkdownV2(translatedText);
-//        messageText = escapeMarkdownV2(messageText);
-//        String returnText = messageText + "\n\n||" + translatedText + "||";
-//        for (Long instance : every30Minutes) {
-//            sendMessage.setChatId(instance);
-//            sendMessage.setText(returnText);
-//            sendMessage.setParseMode("MARKDOWNV2");
-//            sender.execute(sendMessage);
-//        }
-    }
-
-    @Async
-    @Scheduled(cron = "0 0 * * * *")
-    public void interlvalTime60Minute() throws ScheduleServiceException {
-        SendMessage sendMessage = new SendMessage();
-
-//        if (every60Minutes.isEmpty()) {
-//            return;
-//        }
+        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 30);
+        if (listUserTg.isEmpty()) {
+            return;
+        }
         String messageText = requestService.get(generatorControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
@@ -92,12 +65,35 @@ public class ScheduleService {
         translatedText = escapeMarkdownV2(translatedText);
         messageText = escapeMarkdownV2(messageText);
         String returnText = messageText + "\n\n||" + translatedText + "||";
-//        for (Long instance : every60Minutes) {
-//            sendMessage.setChatId(instance);
-//            sendMessage.setText(returnText);
-//            sendMessage.setParseMode("MARKDOWNV2");
-//            sender.execute(sendMessage);
-//        }
+        for (UserTg instance : listUserTg) {
+            sendMessage.setChatId(instance.getChatId());
+            sendMessage.setText(returnText);
+            sendMessage.setParseMode("MARKDOWNV2");
+            sender.execute(sendMessage);
+        }
+    }
+
+    @Async
+    @Scheduled(cron = "0 0 * * * *")
+    public void interlvalTime60Minute() throws ScheduleServiceException {
+        SendMessage sendMessage = new SendMessage();
+        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 60);
+        if (listUserTg.isEmpty()) {
+            return;
+        }
+        String messageText = requestService.get(generatorControllerUrl);
+        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
+        String translatedText = requestService.get(translationControllerUrl);
+
+        translatedText = escapeMarkdownV2(translatedText);
+        messageText = escapeMarkdownV2(messageText);
+        String returnText = messageText + "\n\n||" + translatedText + "||";
+        for (UserTg instance : listUserTg) {
+            sendMessage.setChatId(instance.getChatId());
+            sendMessage.setText(returnText);
+            sendMessage.setParseMode("MARKDOWNV2");
+            sender.execute(sendMessage);
+        }
     }
 }
 
