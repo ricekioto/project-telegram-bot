@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserTgService {
@@ -30,6 +32,16 @@ public class UserTgService {
     @Transactional
     public void deleteByChatId(Long chatId) throws UserTgException {
         userTgRepository.deleteByChatId(chatId);
+    }
+
+    @Transactional
+    public List<UserTg> findAllByChatId(Byte interval) throws UserTgException {
+        return userTgRepository.findAllByInterval(interval);
+    }
+
+    @Transactional
+    public UserTg updateIntervalByChatId(Byte interval, Long chatId) {
+        return userTgRepository.updateIntervalByChatId(interval, chatId);
     }
 }
 
