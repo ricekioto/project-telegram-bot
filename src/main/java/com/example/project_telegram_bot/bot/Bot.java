@@ -1,7 +1,11 @@
 package com.example.project_telegram_bot.bot;
 
+import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.service.*;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -9,10 +13,15 @@ import org.telegram.abilitybots.api.bot.BaseAbilityBot;
 import org.telegram.abilitybots.api.objects.Ability;
 import org.telegram.abilitybots.api.objects.Flag;
 import org.telegram.abilitybots.api.objects.Reply;
+import org.telegram.abilitybots.api.sender.SilentSender;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.util.function.BiConsumer;
 
+import static com.example.project_telegram_bot.entity.Constants.*;
+import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeMarkdownV2;
 import static org.telegram.abilitybots.api.objects.Locality.ALL;
 import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
 import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
@@ -20,11 +29,19 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 @Getter
 @Component
 public class Bot extends AbilityBot {
-    private final ResponseHandlerService responseHandlerService;
+    private UserTgService userTgService;
+    private KeyboardFactoryService keyboardFactoryService;
+    private RequestService requestService;
+    private BuildingUrlService buildingUrlService;
+    private SilentSender sender;
 
-    public Bot(Environment env, ResponseHandlerService responseHandlerService) {
+    public Bot(Environment env, UserTgService userTgService, KeyboardFactoryService keyboardFactoryService, BuildingUrlService buildingUrlService, RequestService requestService) {
         super(env.getProperty("bot.token"), "bot.name");
-        this.responseHandlerService = responseHandlerService;
+        this.userTgService = userTgService;
+        this.keyboardFactoryService = keyboardFactoryService;
+        this.buildingUrlService = buildingUrlService;
+        this.requestService = requestService;
+        this.sender = silent();
     }
 
     public Ability startBot() {
@@ -32,12 +49,99 @@ public class Bot extends AbilityBot {
                 .name("start")
                 .locality(ALL)
                 .privacy(PUBLIC)
-                .action(ctx -> responseHandlerService.toStart(ctx.chatId())).build();
+                .action(ctx -> toStart(ctx.chatId())).build();
     }
 
     public Reply replyToButtons() {
-        BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> responseHandlerService.replyToButtons(getChatId(upd), upd.getMessage());
-        return Reply.of(action, Flag.TEXT, upd -> responseHandlerService.userIsActive(getChatId(upd)));
+        BiConsumer<BaseAbilityBot, Update> action = (abilityBot, upd) -> replyToButtons(getChatId(upd), upd.getMessage());
+        return Reply.of(action, Flag.TEXT, upd -> userIsActive(getChatId(upd)));
+    }
+
+    public void toStart(long chatId) {
+        if (!userTgService.existsByChatId(chatId)) {
+            userTgService.save(UserTg.builder()
+                    .chatId(chatId)
+                    .build());
+        }
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(STARTED_MESSAGE);
+        sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
+        sender.execute(sendMessage);
+    }
+
+    public void replyToButtons(long chatId, Message message) {
+        SendMessage sendMessage = new SendMessage();
+        switch (message.getText()) {
+            case "Остановить бота" -> stopChat(chatId);
+            case "Получить" -> getSentence(chatId);
+            case "15 минут" -> {
+
+                sendMessage.setChatId(chatId);
+                sendMessage.setText("Настройки изменены");
+                sender.execute(sendMessage);
+            }
+            case "30 минут" -> {
+
+                sendMessage.setChatId(chatId);
+                sendMessage.setText("Настройки изменены");
+                sender.execute(sendMessage);
+            }
+            case "60 минут" -> {
+
+                sendMessage.setChatId(chatId);
+                sendMessage.setText("Настройки изменены");
+                sender.execute(sendMessage);
+            }
+            case "Не отправлять по расписанию" -> {
+
+                sendMessage.setChatId(chatId);
+                sendMessage.setText("Настройки изменены");
+                sender.execute(sendMessage);
+            }
+            default -> unexpectedMessage(chatId);
+        }
+    }
+
+    public void getSentence(long chatId) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+
+        String randomEnglishControllerUrl = buildingUrlService.getGeneratorControllerUrl();
+        String messageText = requestService.get(randomEnglishControllerUrl);
+        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
+        String translatedText = requestService.get(translationControllerUrl);
+
+        translatedText = escapeMarkdownV2(translatedText);
+        messageText = escapeMarkdownV2(messageText);
+        String returnText = messageText + "\n\n||" + translatedText + "||";
+        sendMessage.setText(returnText);
+        sendMessage.setParseMode("MARKDOWNV2");
+        sender.execute(sendMessage);
+    }
+
+    private void unexpectedMessage(long chatId) {
+        SendMessage sendMessage = new SendMessage();
+
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(ANOTHER_ANSWER);
+        sendMessage.setReplyMarkup(keyboardFactoryService.getSentenceAndStop());
+        sender.execute(sendMessage);
+    }
+
+    public void stopChat(long chatId) {
+        if (userTgService.existsByChatId(chatId)) {
+            userTgService.deleteByChatId(chatId);
+        }
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(CHAT_CLOSE);
+        sendMessage.setReplyMarkup(keyboardFactoryService.toStart());
+        sender.execute(sendMessage);
+    }
+
+    public boolean userIsActive(Long chatId) {
+        return userTgService.existsByChatId(chatId);
     }
 
     @Override
@@ -45,6 +149,7 @@ public class Bot extends AbilityBot {
         return 1L;
     }
 }
+
 
 
 
