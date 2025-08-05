@@ -7,6 +7,7 @@ public class UserTgException extends RuntimeException {
 
     public UserTgException(String message, Throwable cause) {
     }
+
 }
 
 
