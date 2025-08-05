@@ -27,6 +27,7 @@ KeyboardFactoryService {
         return markup;
     }
 
+
     public ReplyKeyboard getSentenceAndStop() {
         List<KeyboardRow> keyboardMenu = new ArrayList<>();
 
