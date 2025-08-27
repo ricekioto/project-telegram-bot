@@ -1,5 +1,6 @@
 package com.example.project_telegram_bot.entity;
 
+import com.example.project_telegram_bot.entity.enums.Interval;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,8 @@ public class UserTg {
     @Column(nullable = false)
     private Long chatId;
 
-    private Byte interval;
+    @Enumerated(EnumType.STRING)
+    private Interval interval;
 }
 
 
