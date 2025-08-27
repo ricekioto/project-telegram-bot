@@ -1,11 +1,9 @@
-package com.example.project_telegram_bot.bot;
+package com.example.project_telegram_bot.service;
 
+import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserTg;
-import com.example.project_telegram_bot.service.*;
+import com.example.project_telegram_bot.entity.enums.Interval;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
@@ -28,14 +26,14 @@ import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Getter
 @Component
-public class Bot extends AbilityBot {
+public class BotService extends AbilityBot {
     private UserTgService userTgService;
     private KeyboardFactoryService keyboardFactoryService;
     private RequestService requestService;
     private BuildingUrlService buildingUrlService;
     private SilentSender sender;
 
-    public Bot(Environment env, UserTgService userTgService, KeyboardFactoryService keyboardFactoryService, BuildingUrlService buildingUrlService, RequestService requestService) {
+    public BotService(Environment env, UserTgService userTgService, KeyboardFactoryService keyboardFactoryService, BuildingUrlService buildingUrlService, RequestService requestService) {
         super(env.getProperty("bot.token"), "bot.name");
         this.userTgService = userTgService;
         this.keyboardFactoryService = keyboardFactoryService;
@@ -72,29 +70,34 @@ public class Bot extends AbilityBot {
 
     public void replyToButtons(long chatId, Message message) {
         SendMessage sendMessage = new SendMessage();
+        UserTg user = userTgService.findByChatId(chatId);
         switch (message.getText()) {
             case "Остановить бота" -> stopChat(chatId);
             case "Получить" -> getSentence(chatId);
             case "15 минут" -> {
-
+                if (!(user.getInterval() == Interval.INTERVAL15))
+                    userTgService.updateIntervalByChatId(Interval.INTERVAL15, chatId);
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "30 минут" -> {
-
+                if (!(user.getInterval() == Interval.INTERVAL30))
+                    userTgService.updateIntervalByChatId(Interval.INTERVAL30, chatId);
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "60 минут" -> {
-
+                if (!(user.getInterval() == Interval.INTERVAL30))
+                    userTgService.updateIntervalByChatId(Interval.INTERVAL60, chatId);
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
             }
             case "Не отправлять по расписанию" -> {
-
+                if (!(user.getInterval() == Interval.NOINTERVAL))
+                    userTgService.updateIntervalByChatId(Interval.NOINTERVAL, chatId);
                 sendMessage.setChatId(chatId);
                 sendMessage.setText("Настройки изменены");
                 sender.execute(sendMessage);
@@ -116,7 +119,7 @@ public class Bot extends AbilityBot {
         messageText = escapeMarkdownV2(messageText);
         String returnText = messageText + "\n\n||" + translatedText + "||";
         sendMessage.setText(returnText);
-        sendMessage.setParseMode("MARKDOWNV2");
+        sendMessage.setParseMode(Constants.MARKDOWNV2);
         sender.execute(sendMessage);
     }
 
