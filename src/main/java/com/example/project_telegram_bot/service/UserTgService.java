@@ -1,6 +1,7 @@
 package com.example.project_telegram_bot.service;
 
 import com.example.project_telegram_bot.entity.UserTg;
+import com.example.project_telegram_bot.entity.enums.Interval;
 import com.example.project_telegram_bot.error.UserTgException;
 import com.example.project_telegram_bot.reposiroty.UserTgRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,12 @@ import java.util.List;
 public class UserTgService {
     private final UserTgRepository userTgRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public boolean existsByChatId(Long chatId) throws UserTgException {
         return userTgRepository.existsByChatId(chatId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public UserTg findByChatId(Long chatId) throws UserTgException {
         return userTgRepository.findByChatId(chatId);
     }
@@ -34,13 +35,13 @@ public class UserTgService {
         userTgRepository.deleteByChatId(chatId);
     }
 
-    @Transactional
-    public List<UserTg> findAllByChatId(Byte interval) throws UserTgException {
+    @Transactional(readOnly = true)
+    public List<UserTg> findAllByInterval(Interval interval) throws UserTgException {
         return userTgRepository.findAllByInterval(interval);
     }
 
     @Transactional
-    public UserTg updateIntervalByChatId(Byte interval, Long chatId) {
+    public UserTg updateIntervalByChatId(Interval interval, Long chatId) {
         return userTgRepository.updateIntervalByChatId(interval, chatId);
     }
 }
