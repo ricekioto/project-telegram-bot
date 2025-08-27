@@ -1,7 +1,8 @@
 package com.example.project_telegram_bot.service;
 
-import com.example.project_telegram_bot.bot.Bot;
+import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserTg;
+import com.example.project_telegram_bot.entity.enums.Interval;
 import com.example.project_telegram_bot.error.ScheduleServiceException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
 
+import static com.example.project_telegram_bot.entity.Constants.MARKDOWNV2;
 import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeMarkdownV2;
 
 @Getter
@@ -29,9 +31,9 @@ public class ScheduleService {
 
     @Async
     @Scheduled(cron = "0 */15 * * * *")
-    public void interlvalTime10Second() throws ScheduleServiceException {
+    public void interlvalTime15Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
-        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 10);
+        List<UserTg> listUserTg = userTgService.findAllByInterval(Interval.INTERVAL15);
         if (listUserTg.isEmpty()) {
             return;
         }
@@ -45,7 +47,7 @@ public class ScheduleService {
         for (UserTg instance : listUserTg) {
             sendMessage.setChatId(instance.getChatId());
             sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
+            sendMessage.setParseMode(Constants.MARKDOWNV2);
             sender.execute(sendMessage);
         }
     }
@@ -54,7 +56,7 @@ public class ScheduleService {
     @Scheduled(cron = "0 */30 * * * *")
     public void interlvalTime30Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
-        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 30);
+        List<UserTg> listUserTg = userTgService.findAllByInterval(Interval.INTERVAL30);
         if (listUserTg.isEmpty()) {
             return;
         }
@@ -68,7 +70,7 @@ public class ScheduleService {
         for (UserTg instance : listUserTg) {
             sendMessage.setChatId(instance.getChatId());
             sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
+            sendMessage.setParseMode(Constants.MARKDOWNV2);
             sender.execute(sendMessage);
         }
     }
@@ -77,7 +79,7 @@ public class ScheduleService {
     @Scheduled(cron = "0 0 * * * *")
     public void interlvalTime60Minute() throws ScheduleServiceException {
         SendMessage sendMessage = new SendMessage();
-        List<UserTg> listUserTg = userTgService.findAllByChatId((byte) 60);
+        List<UserTg> listUserTg = userTgService.findAllByInterval(Interval.INTERVAL60);
         if (listUserTg.isEmpty()) {
             return;
         }
@@ -91,7 +93,7 @@ public class ScheduleService {
         for (UserTg instance : listUserTg) {
             sendMessage.setChatId(instance.getChatId());
             sendMessage.setText(returnText);
-            sendMessage.setParseMode("MARKDOWNV2");
+            sendMessage.setParseMode(Constants.MARKDOWNV2);
             sender.execute(sendMessage);
         }
     }
