@@ -17,7 +17,7 @@ public class ProjectTelegramBotApplication {
         ConfigurableApplicationContext ctx = SpringApplication.run(ProjectTelegramBotApplication.class, args);
         try {
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-            botsApi.registerBot(ctx.getBean("bot", AbilityBot.class));
+            botsApi.registerBot(ctx.getBean("botService", AbilityBot.class));
         } catch (TelegramApiException e) {
             throw new RuntimeException(e);
         }
