@@ -11,6 +11,7 @@ public class Constants {
     public static final String CHATS_EVERY_10_SECONDS = "every10Seconds";
     public static final String CHATS_EVERY_30_MINUTES = "every30Minutes";
     public static final String CHATS_EVERY_60_MINUTES = "every60Minutes";
+    public static final String MARKDOWNV2 = "MARKDOWNV2";
 }
 
 
