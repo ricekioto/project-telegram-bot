@@ -28,6 +28,7 @@ public class ScheduleService {
     private final RequestService requestService;
     private final BuildingUrlService buildingUrlService;
     private final UserTgService userTgService;
+    private final BotService botService;
 
     @Async
     @Scheduled(cron = "0 */15 * * * *")
@@ -37,6 +38,7 @@ public class ScheduleService {
         if (listUserTg.isEmpty()) {
             return;
         }
+
         String messageText = requestService.get(generatorControllerUrl);
         String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
         String translatedText = requestService.get(translationControllerUrl);
