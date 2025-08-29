@@ -3,6 +3,8 @@ package com.example.project_telegram_bot.service;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.entity.enums.Interval;
+import com.example.project_telegram_bot.kafka.SentenceRequestProducer;
+import com.example.project_telegram_bot.kafka.TranslationRequestProducer;
 import lombok.Getter;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 import static com.example.project_telegram_bot.entity.Constants.*;
@@ -33,13 +38,26 @@ public class BotService extends AbilityBot {
     private BuildingUrlService buildingUrlService;
     private SilentSender sender;
 
-    public BotService(Environment env, UserTgService userTgService, KeyboardFactoryService keyboardFactoryService, BuildingUrlService buildingUrlService, RequestService requestService) {
+    private SentenceRequestProducer sentenceRequestProducer;
+    private TranslationRequestProducer translationRequestProducer;
+    private RequestStateService requestStateService;
+
+    public BotService(Environment env, UserTgService userTgService,
+                      KeyboardFactoryService keyboardFactoryService,
+                      BuildingUrlService buildingUrlService,
+                      RequestService requestService,
+                      SentenceRequestProducer sentenceRequestProducer,
+                      TranslationRequestProducer translationRequestProducer,
+                      RequestStateService requestStateService) {
         super(env.getProperty("bot.token"), "bot.name");
         this.userTgService = userTgService;
         this.keyboardFactoryService = keyboardFactoryService;
         this.buildingUrlService = buildingUrlService;
         this.requestService = requestService;
         this.sender = silent();
+        this.sentenceRequestProducer = sentenceRequestProducer;
+        this.translationRequestProducer = translationRequestProducer;
+        this.requestStateService = requestStateService;
     }
 
     public Ability startBot() {
@@ -107,18 +125,23 @@ public class BotService extends AbilityBot {
     }
 
     public void getSentence(long chatId) {
+        UUID requestId = UUID.randomUUID();
+        requestStateService.addRequestIdToChatIdMapping(requestId, chatId);
+        sentenceRequestProducer.requestNewSentence(chatId);
+    }
+
+    public String getFullMessage(String generateText, String translatedText, long chatId) {
+        translatedText = escapeMarkdownV2(translatedText);
+        generateText = escapeMarkdownV2(generateText);
+        String returnText = generateText + "\n\n||" + translatedText + "||";
+        return returnText;
+    }
+
+    public void sendMessage(String message, long chatId) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(chatId);
 
-        String randomEnglishControllerUrl = buildingUrlService.getGeneratorControllerUrl();
-        String messageText = requestService.get(randomEnglishControllerUrl);
-        String translationControllerUrl = buildingUrlService.getTranslationControllerUrl(messageText);
-        String translatedText = requestService.get(translationControllerUrl);
-
-        translatedText = escapeMarkdownV2(translatedText);
-        messageText = escapeMarkdownV2(messageText);
-        String returnText = messageText + "\n\n||" + translatedText + "||";
-        sendMessage.setText(returnText);
+        sendMessage.setText(message);
         sendMessage.setParseMode(Constants.MARKDOWNV2);
         sender.execute(sendMessage);
     }
