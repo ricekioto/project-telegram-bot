@@ -15,3 +15,4 @@ public class SentenceTranslationResponseDto {
     private UUID requestId;
     private String translatedText;
 }
+
