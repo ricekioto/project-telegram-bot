@@ -23,10 +23,3 @@ public class BuildingUrlService {
         return url;
     }
 }
-
-
-
-
-
-
-
