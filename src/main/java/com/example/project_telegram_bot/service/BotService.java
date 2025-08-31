@@ -175,9 +175,3 @@ public class BotService extends AbilityBot {
         return 1L;
     }
 }
-
-
-
-
-
-
