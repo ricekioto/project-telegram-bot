@@ -15,3 +15,4 @@ public class SentenceGenerationResponseDto {
     private UUID requestId;
     private String generatedSentence;
 }
+
