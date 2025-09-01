@@ -16,3 +16,4 @@ public class SentenceTranslationResponseDto {
     private String translatedText;
 }
 
+
