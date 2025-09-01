@@ -28,7 +28,7 @@ public class TranslationResponseConsumer {
     private final BotService botService;
 
     @KafkaListener(topics = "${kafka.topic.translation.response}",
-            groupId = "${kafka.consumer.group-id}")
+            groupId = "${spring.kafka.consumer.group-id}")
     public void listenTranslationResponse(SentenceTranslationResponseDto message, String key) {
         logger.info("Received message='{}' with key='{}' from topic '{}'",
                 message, key, translationResponseTopic);
@@ -54,3 +54,4 @@ public class TranslationResponseConsumer {
         }
     }
 }
+
