@@ -26,7 +26,7 @@ public class SentenceResponseConsumer {
     }
 
     @KafkaListener(topics = "${kafka.topic.sentence.response}",
-            groupId = "${kafka.consumer.group-id}")
+            groupId = "${spring.kafka.consumer.group-id}")
     public void listenSentenceResponse(SentenceGenerationResponseDto message, String key) {
         logger.info("Received message='{}' with key='{}' from topic '{}'",
                 message, key, sentenceResponseTopic);
@@ -42,3 +42,4 @@ public class SentenceResponseConsumer {
         }
     }
 }
+
