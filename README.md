@@ -6,7 +6,7 @@
 
 ### Такие как:
 
-* Spring (Boot, Security, JPA Hibernate, MVC)
+* Spring (Boot, JPA, MVC)
 * Docker
 * Postgresql
 * REST API
