@@ -46,3 +46,4 @@ public class SentenceRequestProducer {
         sendSentenceGenerationRequest(requestDto, messageKey);
     }
 }
+
