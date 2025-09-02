@@ -16,3 +16,4 @@ public class SentenceGenerationResponseDto {
     private String generatedSentence;
 }
 
+
