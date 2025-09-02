@@ -14,3 +14,4 @@ import java.util.UUID;
 public class SentenceGenerationRequestDto {
     private UUID requestId;
 }
+
