@@ -34,4 +34,3 @@ public class RequestStateService {
         generatedSentencesMap.remove(requestId);
     }
 }
-
