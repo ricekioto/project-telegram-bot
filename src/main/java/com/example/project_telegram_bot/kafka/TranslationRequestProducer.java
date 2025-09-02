@@ -46,5 +46,3 @@ public class TranslationRequestProducer {
         sendTranslationRequest(requestDto, messageKey);
     }
 }
-
-
