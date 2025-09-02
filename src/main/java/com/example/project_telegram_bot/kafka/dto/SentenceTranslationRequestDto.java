@@ -17,6 +17,3 @@ public class SentenceTranslationRequestDto {
     private String textToTranslate;
     private String targetLanguage;
 }
-
-
-
