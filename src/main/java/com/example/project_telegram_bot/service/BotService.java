@@ -3,8 +3,8 @@ package com.example.project_telegram_bot.service;
 import com.example.project_telegram_bot.entity.Constants;
 import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.entity.enums.Interval;
-import com.example.project_telegram_bot.kafka.SentenceRequestProducer;
-import com.example.project_telegram_bot.kafka.TranslationRequestProducer;
+import com.example.project_telegram_bot.kafka.SentenceProducer;
+import com.example.project_telegram_bot.kafka.TranslationProducer;
 import lombok.Getter;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -18,9 +18,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 
 import static com.example.project_telegram_bot.entity.Constants.*;
@@ -38,16 +36,16 @@ public class BotService extends AbilityBot {
     private BuildingUrlService buildingUrlService;
     private SilentSender sender;
 
-    private SentenceRequestProducer sentenceRequestProducer;
-    private TranslationRequestProducer translationRequestProducer;
+    private SentenceProducer sentenceProducer;
+    private TranslationProducer translationProducer;
     private RequestStateService requestStateService;
 
     public BotService(Environment env, UserTgService userTgService,
                       KeyboardFactoryService keyboardFactoryService,
                       BuildingUrlService buildingUrlService,
                       RequestService requestService,
-                      SentenceRequestProducer sentenceRequestProducer,
-                      TranslationRequestProducer translationRequestProducer,
+                      SentenceProducer sentenceProducer,
+                      TranslationProducer translationProducer,
                       RequestStateService requestStateService) {
         super(env.getProperty("bot.token"), "bot.name");
         this.userTgService = userTgService;
@@ -55,8 +53,8 @@ public class BotService extends AbilityBot {
         this.buildingUrlService = buildingUrlService;
         this.requestService = requestService;
         this.sender = silent();
-        this.sentenceRequestProducer = sentenceRequestProducer;
-        this.translationRequestProducer = translationRequestProducer;
+        this.sentenceProducer = sentenceProducer;
+        this.translationProducer = translationProducer;
         this.requestStateService = requestStateService;
     }
 
@@ -126,8 +124,7 @@ public class BotService extends AbilityBot {
 
     public void getSentence(long chatId) {
         UUID requestId = UUID.randomUUID();
-        requestStateService.addRequestIdToChatIdMapping(requestId, chatId);
-        sentenceRequestProducer.requestNewSentence(chatId);
+        sentenceProducer.requestNewSentence(chatId);
     }
 
     public String getFullMessage(String generateText, String translatedText, long chatId) {
