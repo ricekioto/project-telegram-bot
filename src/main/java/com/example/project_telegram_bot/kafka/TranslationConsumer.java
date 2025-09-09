@@ -21,7 +21,6 @@ public class TranslationConsumer {
                 message.getGeneratedSentence(),
                 message.getTranslatedSentence(),
                 chatId);
-
         botService.sendMessage(fullMessage, chatId);
     }
 }
