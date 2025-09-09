@@ -35,7 +35,6 @@ public class BotService extends AbilityBot {
     private RequestService requestService;
     private BuildingUrlService buildingUrlService;
     private SilentSender sender;
-
     private SentenceProducer sentenceProducer;
     private TranslationProducer translationProducer;
     private RequestStateService requestStateService;
