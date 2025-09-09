@@ -20,6 +20,8 @@ public interface UserTgRepository extends JpaRepository<UserTg, Long> {
 
     List<UserTg> findAllByInterval(Interval interval);
 
+    void deleteUserTgsById(Long id);
+
     @Modifying
     @Query("update UserTg u set u.interval = :interval where u.chatId = :chatId")
     UserTg updateIntervalByChatId(Interval interval, Long chatId);
