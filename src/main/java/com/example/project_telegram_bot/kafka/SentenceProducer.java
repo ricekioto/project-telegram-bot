@@ -25,6 +25,7 @@ public class SentenceProducer {
                 .build();
         sendSentenceGenerationRequest(message);
     }
+
 }
 
 
