@@ -15,7 +15,6 @@ public class TranslationProducer {
 
     private final KafkaTemplate<String, KafkaMessage> kafkaTemplate;
 
-
     public void sendTranslationRequest(KafkaMessage message) {
         kafkaTemplate.send(translationRequestTopic, message);
     }
