@@ -15,3 +15,4 @@ public class SilentConfig {
         return botService.silent();
     }
 }
+
