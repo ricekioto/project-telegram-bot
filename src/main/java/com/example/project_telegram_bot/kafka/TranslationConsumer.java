@@ -24,3 +24,4 @@ public class TranslationConsumer {
         botService.sendMessage(fullMessage, chatId);
     }
 }
+
