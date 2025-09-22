@@ -22,10 +22,8 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaTemplateConfig {
-
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
-
     @Value("${spring.kafka.consumer.group-id}")
     private String groupId;
 
@@ -77,4 +75,3 @@ public class KafkaTemplateConfig {
         return factory;
     }
 }
-
