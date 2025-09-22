@@ -9,4 +9,3 @@ public class UserTgException extends RuntimeException {
     }
 
 }
-
