@@ -11,4 +11,3 @@ public class ScheduleServiceException extends RuntimeException {
     }
 
 }
-
