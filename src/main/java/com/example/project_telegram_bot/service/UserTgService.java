@@ -45,4 +45,3 @@ public class UserTgService {
         return userTgRepository.updateIntervalByChatId(interval, chatId);
     }
 }
-
