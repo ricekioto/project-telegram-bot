@@ -21,5 +21,3 @@ public class UserTg {
     @Enumerated(EnumType.STRING)
     private Interval interval;
 }
-
-
