@@ -1,6 +1,5 @@
 package com.example.project_telegram_bot;
 
-import com.example.project_telegram_bot.entity.UserTg;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
