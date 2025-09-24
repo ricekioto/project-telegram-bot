@@ -1,6 +1,5 @@
 package com.example.project_telegram_bot.kafka;
 
-import com.example.project_telegram_bot.entity.UserTg;
 import com.example.project_telegram_bot.kafka.dto.KafkaMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
