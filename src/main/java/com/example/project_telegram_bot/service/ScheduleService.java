@@ -15,7 +15,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.List;
 
-import static com.example.project_telegram_bot.entity.Constants.MARKDOWNV2;
 import static com.example.project_telegram_bot.service.MarkdownV2Service.escapeMarkdownV2;
 
 @Getter
