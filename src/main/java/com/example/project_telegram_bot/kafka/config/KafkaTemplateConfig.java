@@ -75,4 +75,3 @@ public class KafkaTemplateConfig {
         return factory;
     }
 }
-
