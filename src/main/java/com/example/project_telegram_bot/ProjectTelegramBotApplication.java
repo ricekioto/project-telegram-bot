@@ -12,7 +12,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @SpringBootApplication
 @EnableScheduling
 public class ProjectTelegramBotApplication {
-
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(ProjectTelegramBotApplication.class, args);
         try {
