@@ -52,7 +52,6 @@ KeyboardFactoryService {
         return markup;
     }
 
-
     public ReplyKeyboard closeKeyboard() {
         return new ReplyKeyboardRemove(true);
     }
